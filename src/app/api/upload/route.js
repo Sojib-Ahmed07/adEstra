@@ -1,6 +1,12 @@
 // app/api/upload/route.js
 import { NextResponse } from 'next/server'
-import { uploadImage } from '@/lib/cloudinary'
+import { v2 as cloudinary } from 'cloudinary'
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 export async function POST(request) {
   try {
@@ -8,24 +14,23 @@ export async function POST(request) {
     const file = formData.get('file')
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Convert file to Buffer for Cloudinary stream upload
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Pass buffer to your helper in lib/cloudinary.js
-    const imageUrl = await uploadImage(buffer, 'blog_images')
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: 'blog_posts' }, (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        })
+        .end(buffer)
+    })
 
-    return NextResponse.json({ url: imageUrl }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json(
-      { error: error.message || 'Image upload failed' },
-      { status: 500 }
-    )
+    return NextResponse.json({ url: result.secure_url })
+  } catch (err) {
+    return NextResponse.json({ error: err.message || 'Upload failed' }, { status: 500 })
   }
 }
