@@ -9,8 +9,9 @@ import { getCategoriesWithCounts, searchPosts } from '@/app/actions/blog'
 export default async function BlogPage({ searchParams }) {
   await connectToDatabase()
 
-  // Handle URL query params for dynamic search
-  const query = searchParams?.search || ''
+  // Await searchParams for Next.js 15 compatibility
+  const resolvedSearchParams = await searchParams
+  const query = resolvedSearchParams?.search || ''
 
   let posts = []
 
