@@ -1,23 +1,16 @@
 import mongoose from 'mongoose'
-import dns from 'node:dns'
-
-// Force Node.js to use standard public DNS for SRV lookups across all environments
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4'])
-} catch (err) {
-  // Fail silently if environment doesn't permit runtime DNS server overrides
-}
 
 const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local')
+  throw new Error('Please define the MONGODB_URI environment variable inside .env')
 }
 
-let cached = global.mongoose
+// Global cache to persist connections across Workers warm invocations
+let cached = globalThis.mongoose
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null }
+  cached = globalThis.mongoose = { conn: null, promise: null }
 }
 
 export async function connectToDatabase() {
@@ -27,15 +20,12 @@ export async function connectToDatabase() {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
-      // Optimize timeouts so failed attempts don't hang serverless functions
+      bufferCommands: false, // Prevents Workers timeout while waiting for connection
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose
-    })
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => m)
   }
 
   try {
