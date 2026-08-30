@@ -13,7 +13,7 @@ export default async function CaseStudyPage({ params }) {
   return (
     <main className="min-h-screen bg-white text-slate-900 px-6 py-16">
       <div className="max-w-5xl mx-auto space-y-16">
-        
+
         {/* Header & Meta Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
           <div className="md:col-span-2 space-y-8">
@@ -65,23 +65,37 @@ export default async function CaseStudyPage({ params }) {
 
         {/* Process Steps Timeline */}
         {project.process?.length > 0 && (
-          <div className="space-y-8">
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Process</h2>
-            <div className="relative border-l-2 border-indigo-200 ml-5 space-y-10 pl-8">
+          <div className="space-y-12">
+            <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Process</h2>
+
+            <div className="relative pl-16 space-y-12">
+              {/* Vertical Connecting Line */}
+              <div className="absolute left-7 top-7 bottom-7 w-[1.5px] bg-indigo-200" />
+
               {project.process.map((step, idx) => (
-                <div key={idx} className="relative">
-                  {/* Step Circle Badge */}
-                  <span className="absolute -left-[45px] top-0 flex items-center justify-center w-8 h-8 rounded-full border border-indigo-500 bg-white text-indigo-600 font-semibold text-sm">
+                <div key={idx} className="group relative">
+                  {/* Circle Badge with Hover Transition */}
+                  <span className="absolute -left-16 top-0 flex items-center justify-center w-14 h-14 rounded-full border border-indigo-400 bg-white text-slate-600 font-semibold text-xl transition-all duration-300 group-hover:bg-indigo-500 group-hover:border-indigo-500 group-hover:text-white group-hover:shadow-md">
                     {idx + 1}
                   </span>
-                  <h3 className="text-lg font-bold text-slate-900">{step.title}</h3>
-                  {step.points?.length > 0 && (
-                    <ul className="mt-2 space-y-2 list-disc list-inside text-sm text-slate-600">
-                      {step.points.map((pt, pIdx) => (
-                        <li key={pIdx}>{pt}</li>
-                      ))}
-                    </ul>
-                  )}
+
+                  {/* Step Content */}
+                  <div className="pt-2">
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                      {step.title}
+                    </h3>
+
+                    {step.points?.length > 0 && (
+                      <ul className="mt-3 space-y-2.5 text-slate-500 text-base">
+                        {step.points.map((pt, pIdx) => (
+                          <li key={pIdx} className="flex items-start">
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-slate-400 mt-2.5 mr-3 flex-shrink-0" />
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
