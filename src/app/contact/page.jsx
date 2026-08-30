@@ -98,7 +98,7 @@ export default function ContactPage() {
         },
         body: JSON.stringify({
           // Replace with your Web3Forms Access Key
-          access_key: process.env.WEB3FORMS_ACCESS_KEY || 'YOUR_ACCESS_KEY_HERE',
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || 'YOUR_ACCESS_KEY_HERE',
           name: formData.name,
           email: formData.email,
           subject: formData.subject || 'New Contact Form Submission',
