@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { connectToDatabase } from '@/lib/mongoose'
 import TeamMember from '@/models/TeamMember'
 import { isAdminAuthenticated } from '@/app/actions/admin'
-import { uploadImage } from '@/lib/cloudinary' // Fixed: Named import
+import { uploadImage } from '@/lib/cloudinary'
 
 export async function getTeamMembers() {
   try {
@@ -35,12 +35,12 @@ export async function saveTeamMember(formData) {
 
     let imageUrl = formData.get('existingImage') || ''
 
-    // Upload new image to Cloudinary using your uploadImage helper
+    // Edge-compatible image upload buffer conversion
     if (imageFile && imageFile.size > 0) {
       const arrayBuffer = await imageFile.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
+      // Use Uint8Array instead of Node's global Buffer for Edge runtime compatibility
+      const buffer = Uint8Array.from(new Uint8Array(arrayBuffer))
 
-      // Directly calls your helper from lib/cloudinary.js
       imageUrl = await uploadImage(buffer, 'team_members')
     }
 
@@ -56,18 +56,20 @@ export async function saveTeamMember(formData) {
     }
 
     if (id) {
-      await TeamMember.findByIdAndUpdate(id, memberData)
+      await TeamMember.findByIdAndUpdate(id, memberData, { new: true }).lean()
     } else {
       await TeamMember.create(memberData)
     }
 
+    // Revalidate paths
     revalidatePath('/team')
     revalidatePath('/admin/team')
 
-    return { success: true }
+    // Always return a explicit, plain JSON object
+    return { success: true, error: null }
   } catch (error) {
-    console.error('Error saving team member:', error)
-    return { error: 'Failed to save team member.' }
+    console.error('Error saving team member:', error?.message || error)
+    return { success: false, error: error?.message || 'Failed to save team member.' }
   }
 }
 
@@ -82,9 +84,9 @@ export async function deleteTeamMember(id) {
     revalidatePath('/team')
     revalidatePath('/admin/team')
 
-    return { success: true }
+    return { success: true, error: null }
   } catch (error) {
-    console.error('Error deleting member:', error)
-    return { error: 'Failed to delete team member.' }
+    console.error('Error deleting member:', error?.message || error)
+    return { success: false, error: 'Failed to delete team member.' }
   }
 }
