@@ -33,48 +33,47 @@ const WORKS = [
 export default function ShowcaseSection() {
     const sectionRef = useRef(null);
 
-    // Track progress through the dark container
+    // Track scroll progress through the main section
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ['start start', 'end end'],
     });
 
-    // 1. Position Y: Starts near top (-20vh) -> locks center (0vh)
+    // 1. Position Y: Starts offset -> locks into center position
     const titleY = useTransform(
         scrollYProgress,
         [0, 0.2, 0.75],
-        ['-20vh', '0vh', '0vh']
+        ['-15vh', '0vh', '0vh']
     );
 
-    // 2. Scale: Grows massive behind cards (1.8x) as you scroll down
+    // 2. Scale: Grows behind cards as you scroll down
     const titleScale = useTransform(
         scrollYProgress,
         [0, 0.25, 0.75],
         [1, 1.8, 1.8]
     );
 
-    // 3. Opacity: Fully visible -> dissolves out well before section end
+    // 3. Opacity: Remains solid -> fades out near section end
     const titleOpacity = useTransform(
         scrollYProgress,
-        [0, 0.1, 0.6, 0.8],
+        [0, 0.1, 0.65, 0.85],
         [1, 1, 1, 0]
     );
 
-    // 4. Hard-hide DOM display at end of section to prevent sticky layer ghosting
+    // 4. Hide element completely at end of section
     const titleDisplay = useTransform(scrollYProgress, (progress) =>
-        progress >= 0.8 ? 'none' : 'block'
+        progress >= 0.85 ? 'none' : 'block'
     );
 
     return (
-        <section className="bg-[#18181b] font-sans relative py-20 text-white min-h-screen">
+        <section className="bg-[#18181b] font-sans relative text-white">
 
-            {/* Outer Dark Container */}
+            {/* DESKTOP VIEW (≥ sm): Stacking Card Scroll Animations */}
             <div
                 ref={sectionRef}
-                className="relative w-full bg-[#18181b] pt-12 pb-48 px-4 sm:px-12 min-h-[320vh]"
+                className="hidden sm:block relative w-full bg-[#18181b] px-6 lg:px-12 min-h-[230vh]"
             >
-
-                {/* Sticky Background Stage for "WORKS" (z-0 sits behind cards) */}
+                {/* Sticky Background Title Stage */}
                 <div className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none z-0 overflow-hidden">
                     <motion.h1
                         style={{
@@ -83,16 +82,16 @@ export default function ShowcaseSection() {
                             opacity: titleOpacity,
                             display: titleDisplay,
                         }}
-                        className="text-[15vw] font-black tracking-wider text-white uppercase leading-none select-none origin-center text-center w-full transform-gpu"
+                        className="text-[14vw] font-black tracking-wider text-white uppercase leading-none select-none origin-center text-center w-full transform-gpu"
                     >
                         WORKS
                     </motion.h1>
                 </div>
 
-                {/* Stacking Cards Stream (z-10 sits on top of text) */}
-                <div className="relative z-10 max-w-3xl mx-auto -mt-[60vh] space-y-20 pb-32">
+                {/* Stacking Cards Stream */}
+                <div className="relative z-10 max-w-3xl mx-auto -mt-[65vh] space-y-12 lg:space-y-16 pb-24">
                     {WORKS.map((work, index) => (
-                        <StackCard
+                        <DesktopStackCard
                             key={work.id}
                             work={work}
                             index={index}
@@ -101,32 +100,67 @@ export default function ShowcaseSection() {
                         />
                     ))}
                 </div>
+            </div>
 
+            {/* MOBILE VIEW (< sm): Pure Static Stack Layout */}
+            <div className="block sm:hidden w-full bg-[#18181b] px-3 py-8">
+                <div className="text-center py-4 mb-2">
+                    <h2 className="text-4xl font-black tracking-wider text-white uppercase leading-none">
+                        WORKS
+                    </h2>
+                </div>
+
+                <div className="space-y-4">
+                    {WORKS.map((work) => (
+                        <div
+                            key={work.id}
+                            className="bg-white rounded-xl overflow-hidden shadow-lg border border-slate-100/10"
+                        >
+                            <div className={`relative h-[180px] xs:h-[220px] ${work.bgColor} overflow-hidden p-3 flex items-center justify-center`}>
+                                <img
+                                    src={work.image}
+                                    alt={work.title}
+                                    className="w-full h-full object-cover rounded-lg shadow-md"
+                                />
+                            </div>
+                            <div className="p-4 bg-white flex justify-between items-center text-slate-950">
+                                <div>
+                                    <h3 className="text-lg font-extrabold tracking-tight break-words">
+                                        {work.title}
+                                    </h3>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                        {work.category} • {work.year}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
         </section>
     );
 }
 
-function StackCard({ work, index, total, sectionProgress }) {
-    // Scaling down older cards as newer cards stack over them
+function DesktopStackCard({ work, index, total, sectionProgress }) {
+    // Subtle scale-down effect for earlier cards as new ones stack on top
     const scaleProgress = useTransform(
         sectionProgress,
-        [0.2 + index * 0.22, 0.45 + index * 0.22],
+        [0.15 + index * 0.2, 0.4 + index * 0.2],
         [1, 1 - (total - index - 1) * 0.04]
     );
 
     return (
         <div
             className="sticky"
-            style={{ top: `calc(16vh + ${index * 32}px)` }}
+            style={{ top: `calc(12vh + ${index * 24}px)` }}
         >
             <motion.div
                 style={{ scale: scaleProgress }}
                 className="group bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-100/10 cursor-pointer origin-top transform-gpu"
             >
                 {/* Card Image */}
-                <div className={`relative h-[380px] sm:h-[460px] ${work.bgColor} overflow-hidden p-8 flex items-center justify-center`}>
+                <div className={`relative h-[320px] lg:h-[400px] ${work.bgColor} overflow-hidden p-6 lg:p-8 flex items-center justify-center`}>
                     <img
                         src={work.image}
                         alt={work.title}
@@ -135,13 +169,13 @@ function StackCard({ work, index, total, sectionProgress }) {
                 </div>
 
                 {/* Card Info Footer */}
-                <div className="p-8 sm:p-10 bg-white flex justify-between items-center text-slate-950">
-                    <div className="space-y-2">
-                        <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                <div className="p-6 lg:p-8 bg-white flex justify-between items-center text-slate-950">
+                    <div className="space-y-1">
+                        <h3 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
                             {work.title}
                         </h3>
-                        <p className="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest">
-                            {work.year}
+                        <p className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-widest">
+                            {work.category} • {work.year}
                         </p>
                     </div>
                 </div>

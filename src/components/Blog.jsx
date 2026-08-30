@@ -49,9 +49,20 @@ export default function BlogSection() {
                             <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-slate-300 text-xs font-bold tracking-wider text-slate-700 uppercase">
                                 ( BLOGS & NEWS )
                             </div>
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
+
+                            {/* Main Headline - Ultra Slow Motion Right-to-Left Transition */}
+                            <motion.h2 
+                                initial={{ opacity: 0, x: 140 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true, margin: '-50px' }}
+                                transition={{ 
+                                    duration: 3.5, 
+                                    ease: [0.16, 1, 0.3, 1] 
+                                }}
+                                className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950"
+                            >
                                 Our Latest Stories
-                            </h2>
+                            </motion.h2>
                         </div>
 
                         <motion.button

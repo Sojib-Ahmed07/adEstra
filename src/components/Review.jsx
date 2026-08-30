@@ -77,11 +77,22 @@ export default function ReviewSection() {
                     {/* Section Header */}
                     <div className="space-y-4">
                         <div className="inline-flex items-center px-4 py-1 rounded-full border border-slate-300 text-xs font-semibold tracking-wider text-slate-700 uppercase">
-                            ( OUR TEAM )
+                            ( TESTIMONIALS )
                         </div>
-                        <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+
+                        {/* Animated Headline - Right to Left */}
+                        <motion.h2 
+                            initial={{ opacity: 0, x: 140 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: '-50px' }}
+                            transition={{ 
+                                duration: 3.5, 
+                                ease: [0.16, 1, 0.3, 1] 
+                            }}
+                            className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight"
+                        >
                             Discover Customer’s Reviews
-                        </h2>
+                        </motion.h2>
                     </div>
 
                     {/* Dynamic Review Card */}
