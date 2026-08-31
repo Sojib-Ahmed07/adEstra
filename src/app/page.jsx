@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import TickerSlider from '@/components/Slider';
@@ -12,47 +11,50 @@ import TeamSection from '@/components/Members';
 import ReviewSection from '@/components/Review';
 import BlogSection from '@/components/Blog';
 
-const BACKGROUND_VIDEO_URL = "https://res.cloudinary.com/dlefye5fi/video/upload/v1787184455/hero_bg_plixha.mp4";
+const BACKGROUND_VIDEO_URL =
+    "https://res.cloudinary.com/dlefye5fi/video/upload/v1787184455/hero_bg_plixha.mp4";
 
 export default function HomePage() {
-  return (
-    <>
-      {/* Hero Container with Background Video */}
-      <div className="relative min-h-screen bg-[#a0b8c8] overflow-hidden">
-        
-        {/* Background Video Layer */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover scale-105"
-          >
-            <source src={BACKGROUND_VIDEO_URL} type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-slate-950/25 backdrop-blur-[0.5px]" />
-        </div>
+    return (
+        <>
+            <div className="relative min-h-screen bg-[#a0b8c8] overflow-hidden">
 
-        {/* Absolute Transparent Navbar */}
-        <Navbar />
+                {/* Background Video */}
+                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 
-        {/* Hero Content */}
-        <div className="relative z-10">
-          <Hero />
-        </div>
-      </div>
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        className="w-full h-full object-cover scale-105"
+                    >
+                        <source
+                            src={BACKGROUND_VIDEO_URL}
+                            type="video/mp4"
+                        />
+                    </video>
 
-      {/* Rest of Homepage Content */}
-      <About />
-      <TickerSlider />
-      <ExploreSection />
-      <ServicesSection />
-      <ShowcaseSection />
-      <TeamSection />
-      <ReviewSection />
-      <BlogSection />
-    </>
-  );
+                    <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[0.5px]" />
+
+                </div>
+
+                {/* Hero Content */}
+                <div className="relative z-10">
+                    <Hero />
+                </div>
+
+            </div>
+
+            <About />
+            <TickerSlider />
+            <ExploreSection />
+            <ServicesSection />
+            <ShowcaseSection />
+            <TeamSection />
+            <ReviewSection />
+            <BlogSection />
+        </>
+    );
 }
