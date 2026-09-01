@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -40,22 +41,29 @@ export default function Navbar() {
                 {/* Brand Logo */}
                 <Link
                     href="/"
-                    className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#22e3ad] cursor-pointer drop-shadow-md z-50"
+                    className="cursor-pointer z-50 flex items-center"
                 >
-                    adEstra
+                    <Image
+                        src="https://res.cloudinary.com/gd78bssj/image/upload/v1788229203/cropped-cropped-Asset-1_4x.png"
+                        alt="adEstra Logo"
+                        width={160}
+                        height={40}
+                        className="h-9 sm:h-11 w-auto object-contain"
+                        priority
+                    />
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden lg:flex items-center space-x-8 xl:space-x-10 text-sm xl:text-base font-semibold text-[#22e3ad]">
+                <nav className="hidden lg:flex items-center space-x-8 xl:space-x-10 text-sm xl:text-base font-semibold text-black">
 
                     {/* About */}
                     <Link
                         href="/pages/about"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         About
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                     {/* Services */}
@@ -64,7 +72,7 @@ export default function Navbar() {
                         onMouseEnter={() => setIsServicesOpen(true)}
                         onMouseLeave={() => setIsServicesOpen(false)}
                     >
-                        <div className="flex items-center gap-1.5 text-[#22e3ad] hover:text-[#22e3ad] transition-colors group">
+                        <div className="flex items-center gap-1.5 text-black hover:text-black transition-colors group">
 
                             <span>Services</span>
 
@@ -77,7 +85,7 @@ export default function Navbar() {
                                 <ChevronDown className="w-4 h-4" />
                             </motion.div>
 
-                            <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                            <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                         </div>
 
                         {/* Services Dropdown */}
@@ -125,51 +133,51 @@ export default function Navbar() {
                     {/* Portfolio */}
                     <Link
                         href="/portfolio"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         Portfolio
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                     {/* Team */}
                     <Link
                         href="/team"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         Team
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                     {/* Blog */}
                     <Link
                         href="/blog"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         Blog
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                     {/* Contact */}
                     <Link
                         href="/contact"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         Contact
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                     {/* Pricing */}
                     <Link
                         href="/pricing"
-                        className="relative group py-2 text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                        className="relative group py-2 text-black hover:text-black transition-colors"
                     >
                         Pricing
 
-                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-[#22e3ad] transition-all duration-300 group-hover:w-full" />
+                        <span className="absolute left-0 bottom-0 w-0 h-[2.5px] bg-black transition-all duration-300 group-hover:w-full" />
                     </Link>
 
                 </nav>
@@ -182,13 +190,13 @@ export default function Navbar() {
                                 px-6 py-2.5
                                 rounded-full
                                 border-2
-                                border-[#22e3ad]
-                                text-[#22e3ad]
+                                border-black
+                                text-black
                                 text-sm
                                 font-bold
                                 shadow-md
-                                hover:bg-[#22e3ad]
-                                hover:text-slate-950
+                                hover:bg-black
+                                hover:text-white
                                 transition-all
                                 cursor-pointer
                             "
@@ -201,13 +209,13 @@ export default function Navbar() {
                 {/* Mobile Hamburger */}
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="lg:hidden p-2 text-[#22e3ad] focus:outline-none z-50 cursor-pointer"
+                    className="lg:hidden p-2 text-black focus:outline-none z-50 cursor-pointer"
                     aria-label="Toggle Menu"
                 >
                     {isMobileMenuOpen ? (
-                        <X className="w-7 h-7 text-[#22e3ad]" />
+                        <X className="w-7 h-7 text-black" />
                     ) : (
-                        <Menu className="w-7 h-7 text-[#22e3ad]" />
+                        <Menu className="w-7 h-7 text-black" />
                     )}
                 </button>
 
@@ -242,7 +250,7 @@ export default function Navbar() {
                             <Link
                                 href="/pages/about"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 About
                             </Link>
@@ -254,7 +262,7 @@ export default function Navbar() {
                                     onClick={() =>
                                         setIsMobileServicesOpen(!isMobileServicesOpen)
                                     }
-                                    className="w-full flex items-center justify-between text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors"
+                                    className="w-full flex items-center justify-between text-xl font-bold text-black hover:text-black transition-colors"
                                 >
                                     <span>
                                         Services
@@ -267,7 +275,7 @@ export default function Navbar() {
                                             duration-300
                                             ${
                                                 isMobileServicesOpen
-                                                    ? 'rotate-180 text-[#22e3ad]'
+                                                    ? 'rotate-180 text-black'
                                                     : ''
                                             }
                                         `}
@@ -317,7 +325,7 @@ export default function Navbar() {
                             <Link
                                 href="/portfolio"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 Portfolio
                             </Link>
@@ -326,7 +334,7 @@ export default function Navbar() {
                             <Link
                                 href="/team"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 Team
                             </Link>
@@ -335,7 +343,7 @@ export default function Navbar() {
                             <Link
                                 href="/blog"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 Blog
                             </Link>
@@ -344,7 +352,7 @@ export default function Navbar() {
                             <Link
                                 href="/contact"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 Contact
                             </Link>
@@ -353,7 +361,7 @@ export default function Navbar() {
                             <Link
                                 href="/pricing"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-xl font-bold text-[#22e3ad] hover:text-[#22e3ad] transition-colors py-2 border-b border-white/10"
+                                className="text-xl font-bold text-black hover:text-black transition-colors py-2 border-b border-white/10"
                             >
                                 Pricing
                             </Link>
@@ -371,12 +379,12 @@ export default function Navbar() {
                                         w-full
                                         py-3.5
                                         rounded-full
-                                        bg-[#22e3ad]
-                                        text-slate-950
+                                        bg-black
+                                        text-white
                                         font-bold
                                         text-base
                                         shadow-lg
-                                        hover:bg-emerald-400
+                                        hover:bg-slate-800
                                         transition-colors
                                         cursor-pointer
                                     "

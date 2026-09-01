@@ -1,200 +1,706 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useLayoutEffect, useRef } from 'react';
+import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES = [
     {
         id: '01.',
-        title: 'UI/UX Design',
-        description: 'We believe that exceptional design is the main cornerstone of effective new digital experiences.',
-        bg: 'bg-[#f4f5f7]',
+        title: 'Design',
+        description:
+            'We believe that exceptional design is the main cornerstone of effective new digital experiences.',
+        bg: '#f7f6f8',
         subServices: [
             'UI/UX DESIGN',
             'PRODUCT DESIGN',
             'BRAND IDENTITY DESIGN',
-            'GRAPHICS / 3D DESIGN'
-        ]
+            'GRAPHICS / 3D DESIGN',
+        ],
     },
     {
         id: '02.',
-        title: 'Digital Marketing',
-        description: 'We offer a comprehensive range of digital marketing services designed to help your business thrive in the digital landscape.',
-        bg: 'bg-[#f3f1ea]',
+        title: 'Marketing',
+        description:
+            'We offer a comprehensive range of digital marketing services designed to help your business thrive in the digital landscape.',
+        bg: '#f1f0eb',
         subServices: [
             'SEO EXPERT',
             'SOCIAL MEDIA MARKETING',
             'CONTENT MARKETING',
-            'EMAIL MARKETING'
-        ]
+            'EMAIL MARKETING',
+        ],
     },
     {
         id: '03.',
-        title: 'Web Development',
-        description: 'Building modern, high-performance web applications and websites tailored to deliver speed, security, and scalability.',
-        bg: 'bg-[#eef4f8]',
+        title: 'SEO',
+        description:
+            'Our SEO strategies are designed to improve visibility, attract qualified traffic, and build sustainable organic growth.',
+        bg: '#eef3f7',
         subServices: [
-            'FRONTEND DEVELOPMENT',
-            'BACKEND ARCHITECTURE',
-            'E-COMMERCE PLATFORMS',
-            'WEB PERFORMANCE'
-        ]
+            'KEYWORD RESEARCH',
+            'ON-PAGE SEO',
+            'TECHNICAL SEO',
+            'SEO STRATEGY',
+        ],
     },
     {
         id: '04.',
-        title: 'IT Solutions',
-        description: 'Robust enterprise IT infrastructure, cloud architectures, and system integrations built to optimize operations.',
-        bg: 'bg-[#f5f3f0]',
+        title: 'Copywriting',
+        description:
+            'Our copywriting services create clear, compelling, and persuasive content that communicates your brand and drives meaningful action.',
+        bg: '#f4f1ed',
         subServices: [
-            'CLOUD INFRASTRUCTURE',
-            'CYBERSECURITY',
-            'SYSTEM INTEGRATION',
-            'IT CONSULTING'
-        ]
+            'ADVERTISING COPY',
+            'SEO COPYWRITING',
+            'CONTENT WRITING',
+            'SALES COPYWRITING',
+        ],
     },
     {
         id: '05.',
-        title: 'Product Design',
-        description: 'End-to-end digital product design from initial feature ideation and MVP validation to full-scale interactive system design.',
-        bg: 'bg-[#f1f5f9]',
+        title: 'Autocad Design',
+        description:
+            'Our AutoCAD design services transform conceptual ideas into precise, detailed, and production-ready technical drawings.',
+        bg: '#f1f4f7',
         subServices: [
-            'MVP DEVELOPMENT',
-            'UX ARCHITECTURE',
-            'USER TESTING',
-            'PRODUCT STRATEGY'
-        ]
+            'IDEATION',
+            'MODELING',
+            'ANALYSIS',
+            'FINALIZATION',
+        ],
     },
     {
         id: '06.',
-        title: 'App Development',
-        description: 'Native and cross-platform mobile apps engineered with fluid animations, intuitive UI, and secure API integrations.',
-        bg: 'bg-[#f0fdf4]',
+        title: 'Ai Training',
+        description:
+            'Enhance your digital strategy with our AI Training Service, tailored to boost productivity and SEO performance.',
+        bg: '#f7f5f6',
         subServices: [
-            'IOS & ANDROID',
-            'REACT NATIVE / FLUTTER',
-            'MOBILE UI/UX',
-            'API INTEGRATION'
-        ]
-    }
+            'RESEARCH',
+            'QUESTION',
+            'ANSWER',
+            'RESULT',
+        ],
+    },
 ];
 
-// Entrance Animation Variants for Cards
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.2,
-            delayChildren: 0.1,
-        },
-    },
-};
-
-// Ultra Slow-Motion Bottom to Up Variant for Card Headers & Content
-const slideUpVariant = {
-    hidden: { opacity: 0, y: 120 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 3.5, // Ultra slow-motion duration (3.5s)
-            ease: [0.16, 1, 0.3, 1], // Smooth cinematic easing
-        },
-    },
-};
-
 export default function ServicesSection() {
+    const sectionRef = useRef(null);
+    const cardsRef = useRef([]);
+
+    useLayoutEffect(() => {
+        const section = sectionRef.current;
+
+        if (!section) return;
+
+        const ctx = gsap.context(() => {
+            const cards = cardsRef.current.filter(Boolean);
+
+            const mm = gsap.matchMedia();
+
+            /*
+            ============================================================
+            DESKTOP
+            ============================================================
+            */
+
+            mm.add('(min-width: 768px)', () => {
+                cards.forEach((card) => {
+                    const title = card.querySelector('.service-title');
+                    const description =
+                        card.querySelector('.service-description');
+                    const bottom =
+                        card.querySelector('.service-bottom');
+
+                    /*
+                    Initial state
+                    */
+                    gsap.set(title, {
+                        y: 50,
+                        opacity: 0,
+                    });
+
+                    gsap.set(description, {
+                        y: 30,
+                        opacity: 0,
+                    });
+
+                    gsap.set(bottom, {
+                        y: 20,
+                        opacity: 0,
+                    });
+
+                    /*
+                    Title
+                    */
+                    gsap.to(title, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+
+                    /*
+                    Description
+                    */
+                    gsap.to(description, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.9,
+                        delay: 0.08,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+
+                    /*
+                    Bottom services
+                    */
+                    gsap.to(bottom, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        delay: 0.15,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+                });
+
+                /*
+                ========================================================
+                STACK DEPTH
+                ========================================================
+
+                When a new card comes up, the cards underneath become
+                slightly smaller.
+
+                This makes the stack feel deeper without changing
+                the actual card design.
+                */
+
+                cards.forEach((card, index) => {
+                    if (index === 0) return;
+
+                    const previousCards = cards.slice(0, index);
+
+                    previousCards.forEach(
+                        (previousCard, previousIndex) => {
+                            gsap.to(previousCard, {
+                                scale: Math.max(
+                                    0.96,
+                                    1 -
+                                        (index - previousIndex) *
+                                            0.012
+                                ),
+                                ease: 'none',
+                                scrollTrigger: {
+                                    trigger: card,
+                                    start: 'top bottom',
+                                    end: 'top top',
+                                    scrub: true,
+                                },
+                            });
+                        }
+                    );
+                });
+
+                ScrollTrigger.refresh();
+            });
+
+            /*
+            ============================================================
+            MOBILE
+            ============================================================
+            */
+
+            mm.add('(max-width: 767px)', () => {
+                cards.forEach((card) => {
+                    const title =
+                        card.querySelector('.service-title');
+
+                    const description =
+                        card.querySelector(
+                            '.service-description'
+                        );
+
+                    const bottom =
+                        card.querySelector('.service-bottom');
+
+                    gsap.set(title, {
+                        y: 30,
+                        opacity: 0,
+                    });
+
+                    gsap.set(description, {
+                        y: 20,
+                        opacity: 0,
+                    });
+
+                    gsap.set(bottom, {
+                        y: 15,
+                        opacity: 0,
+                    });
+
+                    gsap.to(title, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+
+                    gsap.to(description, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        delay: 0.08,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+
+                    gsap.to(bottom, {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        delay: 0.15,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions:
+                                'play none none reverse',
+                        },
+                    });
+                });
+
+                ScrollTrigger.refresh();
+            });
+
+            return () => {
+                mm.revert();
+            };
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <section className="bg-[#f8fafc] font-sans relative">
+        <section
+            ref={sectionRef}
+            className="relative w-full bg-[#f7f6f8]"
+        >
+            {/* ========================================================
+                HEADER
+            ======================================================== */}
 
-            {/* Sticky Main Header */}
-            <div className="sticky top-0 z-[60] bg-[#f8fafc]/90 backdrop-blur-md px-4 sm:px-8 py-4 sm:py-6 lg:py-8 border-b border-slate-200/80 overflow-hidden">
-                <div className="max-w-[1400px] mx-auto flex flex-row justify-between items-center gap-4">
-                    
-                    {/* Main Header Text: Right-to-Left Ultra Slow Motion */}
-                    <motion.h2 
-                        initial={{ opacity: 0, x: 140 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: '-50px' }}
-                        transition={{ 
-                            duration: 3.5, 
-                            ease: [0.16, 1, 0.3, 1] 
-                        }}
-                        className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight"
-                    >
-                        Our services
-                    </motion.h2>
+            <div
+                className="
+                    relative
+                    z-[100]
+                    flex
+                    w-full
+                    items-center
+                    justify-between
+                    border-t
+                    border-black/[0.08]
+                    bg-[#f7f6f8]
+                    px-6
+                    py-6
 
-                    <button className="px-4 py-2 sm:px-8 sm:py-3 rounded-full border border-slate-900 sm:border-2 text-slate-900 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-300 cursor-pointer shrink-0">
+                    sm:px-10
+                    sm:py-7
+
+                    lg:px-[9.4vw]
+                    lg:py-8
+                "
+            >
+                <h2
+                    className="
+                        text-[28px]
+                        font-medium
+                        leading-none
+                        tracking-[-0.045em]
+                        text-[#111111]
+
+                        sm:text-[36px]
+
+                        lg:text-[42px]
+                    "
+                >
+                    Our services
+                </h2>
+
+                <Link
+                    href="/services"
+                    className="
+                        group
+                        flex
+                        items-center
+                        gap-3
+                        text-[10px]
+                        font-medium
+                        uppercase
+                        tracking-[0.12em]
+                        text-[#111111]
+
+                        sm:text-[11px]
+                    "
+                >
+                    <span>
                         See All Services
-                    </button>
-                </div>
+                    </span>
+
+                    <span
+                        className="
+                            flex
+                            h-8
+                            w-8
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-black
+                            transition-all
+                            duration-300
+                            group-hover:bg-black
+                            group-hover:text-white
+
+                            sm:h-9
+                            sm:w-9
+                        "
+                    >
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M2 10L10 2"
+                                stroke="currentColor"
+                                strokeWidth="1.3"
+                                strokeLinecap="round"
+                            />
+
+                            <path
+                                d="M4 2H10V8"
+                                stroke="currentColor"
+                                strokeWidth="1.3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </span>
+                </Link>
             </div>
 
-            {/* Stacking Cards Container */}
-            <div className="relative max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-12">
+            {/* ========================================================
+                STACKING SERVICES
+            ======================================================== */}
+
+            <div className="relative w-full">
                 {SERVICES.map((service, index) => (
-                    <div
+                    <article
                         key={service.id}
-                        className={`sticky ${service.bg} min-h-0 md:min-h-[550px] lg:min-h-[600px] p-5 sm:p-10 lg:p-16 rounded-2xl sm:rounded-3xl border border-slate-300/70 shadow-xl transition-all duration-500 mb-6 sm:mb-12`}
+                        ref={(element) => {
+                            cardsRef.current[index] = element;
+                        }}
+                        className="
+                            service-card
+                            sticky
+                            w-full
+
+                            /*
+                            Desktop card height
+                            */
+                            min-h-[470px]
+
+                            /*
+                            Mobile
+                            */
+                            sm:min-h-[500px]
+
+                            /*
+                            Layout
+                            */
+                            flex
+                            flex-col
+                            justify-between
+
+                            /*
+                            Borders
+                            */
+                            border-t
+                            border-black/[0.05]
+
+                            /*
+                            Padding
+                            */
+                            px-6
+                            py-10
+
+                            sm:px-10
+                            sm:py-12
+
+                            lg:px-[9.4vw]
+                            lg:py-[55px]
+                        "
                         style={{
+                            backgroundColor: service.bg,
+
+                            /*
+                            ==================================================
+                            STACK POSITION
+                            ==================================================
+
+                            Every card sticks slightly lower than the
+                            previous card.
+
+                            Card 1 = 70px
+                            Card 2 = 94px
+                            Card 3 = 118px
+                            Card 4 = 142px
+                            etc.
+                            */
+
+                            top: `calc(70px + ${index * 24}px)`,
+
+                            /*
+                            New cards always sit above older cards.
+                            */
+
                             zIndex: index + 1,
-                            top: `calc(70px + ${index * 24}px)` // Dynamic offset for sticky stack
                         }}
                     >
-                        {/* Card Staggered Entrance Container */}
-                        <motion.div
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ amount: 0.2, once: false }}
-                            variants={containerVariants}
-                            className="w-full h-full flex flex-col justify-between space-y-6 sm:space-y-12 lg:space-y-16 overflow-hidden"
+                        {/* =================================================
+                            TOP CONTENT
+                        ================================================= */}
+
+                        <div
+                            className="
+                                grid
+                                w-full
+                                grid-cols-1
+                                gap-8
+
+                                lg:grid-cols-12
+                                lg:gap-8
+                            "
                         >
+                            {/* =================================================
+                                TITLE
+                            ================================================= */}
 
-                            {/* Top Row: Title, Number & Main Paragraph */}
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-start">
+                            <div className="lg:col-span-8">
+                                <div
+                                    className="
+                                        service-title
+                                        flex
+                                        items-start
+                                    "
+                                >
+                                    {/* NUMBER */}
 
-                                {/* Service Title & Number - Ultra Slow Bottom-to-Top Animation */}
-                                <motion.div variants={slideUpVariant} className="lg:col-span-8 flex items-baseline gap-3 sm:gap-8">
-                                    <span className="text-lg sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight shrink-0">
+                                    <span
+                                        className="
+                                            mr-3
+                                            shrink-0
+                                            pt-1
+                                            text-[15px]
+                                            font-medium
+                                            leading-none
+                                            tracking-[-0.03em]
+                                            text-[#171717]
+
+                                            sm:mr-5
+                                            sm:text-[19px]
+
+                                            lg:mr-4
+                                            lg:pt-[9px]
+                                            lg:text-[23px]
+                                        "
+                                    >
                                         {service.id}
                                     </span>
-                                    
-                                    <h3 className="text-3xl sm:text-6xl lg:text-[110px] font-black text-slate-950 tracking-tight leading-[1] sm:leading-[0.9] break-words">
+
+                                    {/* TITLE */}
+
+                                    <h3
+                                        className="
+                                            max-w-full
+                                            break-words
+                                            text-[62px]
+                                            font-black
+                                            leading-[0.83]
+                                            tracking-[-0.075em]
+                                            text-[#111111]
+
+                                            sm:text-[92px]
+
+                                            md:text-[105px]
+
+                                            lg:text-[clamp(90px,8vw,150px)]
+                                        "
+                                    >
                                         {service.title}
                                     </h3>
-                                </motion.div>
-
-                                {/* Description Paragraph - Ultra Slow Bottom-to-Top Animation */}
-                                <motion.div variants={slideUpVariant} className="lg:col-span-4 lg:pt-4">
-                                    <p className="text-slate-800 text-sm sm:text-base lg:text-xl font-medium leading-relaxed max-w-md">
-                                        {service.description}
-                                    </p>
-                                </motion.div>
-
+                                </div>
                             </div>
 
-                            {/* Bottom Row: Sub-Services Tag Line - Ultra Slow Bottom-to-Top Animation */}
-                            <motion.div variants={slideUpVariant} className="pt-4 sm:pt-8 border-t border-slate-900/10">
-                                <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4">
-                                    {service.subServices.map((sub, i) => (
-                                        <React.Fragment key={i}>
-                                            <span className="text-[10px] sm:text-xs lg:text-base font-extrabold tracking-wider sm:tracking-widest text-slate-900 uppercase">
+                            {/* =================================================
+                                DESCRIPTION
+                            ================================================= */}
+
+                            <div
+                                className="
+                                    service-description
+                                    lg:col-span-4
+                                    lg:pt-1
+                                "
+                            >
+                                <p
+                                    className="
+                                        max-w-[380px]
+                                        text-[15px]
+                                        font-normal
+                                        leading-[1.5]
+                                        tracking-[-0.012em]
+                                        text-[#292929]
+
+                                        sm:text-[16px]
+
+                                        lg:text-[17px]
+                                    "
+                                >
+                                    {service.description}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* =================================================
+                            BOTTOM SERVICE LIST
+                        ================================================= */}
+
+                        <div
+                            className="
+                                service-bottom
+                                mt-auto
+                                w-full
+                                border-t
+                                border-black/[0.25]
+                                pt-5
+
+                                sm:pt-6
+
+                                lg:pt-7
+                            "
+                        >
+                            <div
+                                className="
+                                    flex
+                                    w-full
+                                    flex-col
+                                    gap-4
+
+                                    sm:grid
+                                    sm:grid-cols-2
+                                    sm:gap-y-4
+
+                                    lg:flex
+                                    lg:flex-row
+                                    lg:items-center
+                                    lg:justify-between
+                                    lg:gap-0
+                                "
+                            >
+                                {service.subServices.map(
+                                    (sub, i) => (
+                                        <React.Fragment key={sub}>
+                                            {/* SERVICE NAME */}
+
+                                            <span
+                                                className="
+                                                    whitespace-nowrap
+                                                    text-[10px]
+                                                    font-normal
+                                                    uppercase
+                                                    tracking-[0.02em]
+                                                    text-[#626575]
+
+                                                    sm:text-[11px]
+
+                                                    lg:text-[13px]
+                                                "
+                                            >
                                                 {sub}
                                             </span>
-                                            {i < service.subServices.length - 1 && (
-                                                <span className="hidden md:inline-block w-8 sm:w-20 lg:w-36 h-[2px] bg-slate-900/20" />
+
+                                            {/* LINE */}
+
+                                            {i <
+                                                service
+                                                    .subServices
+                                                    .length -
+                                                    1 && (
+                                                <span
+                                                    className="
+                                                        hidden
+                                                        h-px
+                                                        bg-black/60
+
+                                                        lg:block
+                                                        lg:w-[65px]
+
+                                                        xl:w-[100px]
+                                                    "
+                                                />
                                             )}
                                         </React.Fragment>
-                                    ))}
-                                </div>
-                            </motion.div>
-
-                        </motion.div>
-                    </div>
+                                    )
+                                )}
+                            </div>
+                        </div>
+                    </article>
                 ))}
             </div>
 
+            {/* ========================================================
+                IMPORTANT:
+
+                NO EXTRA PADDING / HEIGHT AFTER THE LAST CARD.
+
+                The section ends naturally after the sixth card.
+            ======================================================== */}
         </section>
     );
 }

@@ -12,7 +12,7 @@ import ReviewSection from '@/components/Review';
 import BlogSection from '@/components/Blog';
 
 const BACKGROUND_VIDEO_URL =
-    "https://res.cloudinary.com/dlefye5fi/video/upload/v1787184455/hero_bg_plixha.mp4";
+    "https://res.cloudinary.com/gd78bssj/video/upload/v1788228588/0_Fun_Geometry_3840x2160.mp4";
 
 export default function HomePage() {
     return (
