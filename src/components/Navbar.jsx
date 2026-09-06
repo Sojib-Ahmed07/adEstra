@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
     Menu,
     X,
@@ -12,7 +13,6 @@ import {
     Sparkles,
     PhoneCall,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -54,82 +54,146 @@ export default function Navbar() {
             const navPill = navPillRef.current;
             const logo = logoRef.current;
             const cta = ctaRef.current;
+
             if (!navPill) return;
 
-            /*
-             * Initial Entrance Animation
-             */
+            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+
+            const hero = document.getElementById('hero');
+
+            /* ENTRANCE ANIMATION */
             gsap.fromTo(
                 containerRef.current,
-                {
-                    y: -30,
-                    opacity: 0,
-                },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    delay: 0.1,
-                    ease: 'power4.out',
-                }
+                { y: -30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1, delay: 0.1, ease: 'power4.out' }
             );
 
-            /*
-             * Scroll Trigger: Middle Pill STAYS sticky, Logo & CTA Fade Out together
-             */
-            ScrollTrigger.create({
-                start: '50px top',
+            /* HELPER FUNCTIONS */
+            const setDarkNavbar = () => {
+                gsap.to(navPill, {
+                    backgroundColor: 'rgba(10, 12, 11, 0.45)',
+                    borderColor: 'rgba(255, 255, 255, 0.09)',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.20)',
+                    backdropFilter: 'blur(18px)',
+                    scale: 1,
+                    duration: 0.45,
+                    ease: 'power3.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.desktop-nav-text', {
+                    color: 'rgba(255, 255, 255, 0.50)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.services-button', {
+                    color: 'rgba(255, 255, 255, 0.50)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.desktop-nav-icon', {
+                    color: 'rgba(255, 255, 255, 0.35)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+            };
 
-                onEnter: () => {
-                    // Update central navigation pill styling
-                    gsap.to(navPill, {
-                        backgroundColor: 'rgba(10, 12, 11, 0.85)',
-                        borderColor: 'rgba(255, 255, 255, 0.18)',
-                        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.45)',
-                        backdropFilter: 'blur(24px)',
-                        scale: 0.98,
-                        duration: 0.4,
-                        ease: 'power3.out',
-                    });
+            const setLightNavbar = () => {
+                gsap.to(navPill, {
+                    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+                    borderColor: 'rgba(0, 0, 0, 0.10)',
+                    boxShadow: '0 18px 50px rgba(0, 0, 0, 0.10)',
+                    backdropFilter: 'blur(24px)',
+                    scale: 1,
+                    duration: 0.45,
+                    ease: 'power3.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.desktop-nav-text', {
+                    color: 'rgba(0, 0, 0, 0.75)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.services-button', {
+                    color: 'rgba(0, 0, 0, 0.75)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+                gsap.to('.desktop-nav-icon', {
+                    color: 'rgba(0, 0, 0, 0.50)',
+                    duration: 0.35,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                });
+            };
 
-                    // Synchronized fade out for both Logo and "Let's Talk" CTA
-                    if (logo && cta) {
-                        gsap.to([logo, cta], {
-                            opacity: 0,
-                            y: -20,
-                            pointerEvents: 'none',
-                            duration: 0.35,
-                            ease: 'power2.out',
-                        });
-                    }
-                },
+            /* SCROLL LOGIC FOR HERO (HOME PAGE ONLY) */
+            if (hero) {
+                ScrollTrigger.create({
+                    trigger: hero,
+                    start: 'bottom top',
+                    onEnter: () => setLightNavbar(),
+                    onLeaveBack: () => setDarkNavbar(),
+                });
 
-                onLeaveBack: () => {
-                    // Reset central navigation pill
-                    gsap.to(navPill, {
-                        backgroundColor: 'rgba(10, 12, 11, 0.45)',
-                        borderColor: 'rgba(255, 255, 255, 0.09)',
-                        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.2)',
-                        backdropFilter: 'blur(18px)',
-                        scale: 1,
-                        duration: 0.4,
-                        ease: 'power3.out',
-                    });
+                ScrollTrigger.create({
+                    start: '50px top',
+                    onEnter: () => {
+                        if (logo) gsap.to(logo, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
+                        if (cta) gsap.to(cta, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
 
-                    // Synchronized reveal for Logo and "Let's Talk" CTA
-                    if (logo && cta) {
-                        gsap.to([logo, cta], {
-                            opacity: 1,
-                            y: 0,
-                            pointerEvents: 'auto',
-                            duration: 0.35,
-                            ease: 'power2.out',
-                        });
-                    }
-                },
-            });
+                        const heroBottom = hero.getBoundingClientRect().bottom;
+                        if (heroBottom > 0) {
+                            gsap.to(navPill, {
+                                backgroundColor: 'rgba(10, 12, 11, 0.85)',
+                                borderColor: 'rgba(255, 255, 255, 0.18)',
+                                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.45)',
+                                backdropFilter: 'blur(24px)',
+                                scale: 0.98,
+                                duration: 0.4,
+                            });
+                        }
+                    },
+                    onLeaveBack: () => {
+                        if (logo) gsap.to(logo, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
+                        if (cta) gsap.to(cta, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
+                        setDarkNavbar();
+                    },
+                });
+
+                const heroBottom = hero.getBoundingClientRect().bottom;
+                if (heroBottom <= 0) {
+                    setLightNavbar();
+                } else {
+                    setDarkNavbar();
+                }
+            } else {
+                setLightNavbar();
+
+                ScrollTrigger.create({
+                    start: '50px top',
+                    onEnter: () => {
+                        if (logo) gsap.to(logo, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
+                        if (cta) gsap.to(cta, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
+                    },
+                    onLeaveBack: () => {
+                        if (logo) gsap.to(logo, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
+                        if (cta) gsap.to(cta, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
+                    },
+                });
+            }
+
+            ScrollTrigger.refresh();
+
+            return () => {
+                ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+            };
         },
-        { scope: containerRef }
+        { scope: containerRef, dependencies: [pathname] }
     );
 
     const closeMobileMenu = () => {
@@ -139,88 +203,38 @@ export default function Navbar() {
 
     return (
         <>
-            {/* =====================================================
-                FIXED HEADER WRAPPER
-            ====================================================== */}
-            <div className="fixed top-0 left-0 right-0 z-[100] w-full pointer-events-none">
+            {/* Added mb-8 for extra spacing from page text */}
+            <div className="fixed top-0 left-0 right-0 z-[100] w-full pointer-events-none mb-8">
                 <header
                     ref={containerRef}
-                    className="
-                        mx-auto
-                        pt-4
-                        sm:pt-5
-                        lg:pt-6
-                        flex
-                        w-[94%]
-                        max-w-[1280px]
-                        items-center
-                        justify-between
-                        px-2
-                    "
+                    className="mx-auto pt-6 pb-6 sm:pt-7 lg:pt-7 flex w-[94%] max-w-[1280px] items-center justify-between px-2"
                 >
-                    {/* =================================================
-                        NON-STICKY LOGO (LEFT)
-                    ================================================== */}
+                    {/* LOGO */}
                     <div ref={logoRef} className="pointer-events-auto bg-transparent">
                         <Link
                             href="/"
-                            className="
-                                group
-                                relative
-                                flex
-                                h-11
-                                items-center
-                                rounded-full
-                                bg-transparent
-                                px-3
-                                transition-all
-                                duration-300
-                                hover:bg-white/[0.06]
-                            "
+                            className="group relative flex h-11 items-center rounded-full bg-transparent px-3 transition-all duration-300 hover:bg-black/[0.06]"
                         >
                             <Image
                                 src="https://res.cloudinary.com/gd78bssj/image/upload/v1788229203/cropped-cropped-Asset-1_4x.png"
                                 alt="adEstra Logo"
                                 width={160}
                                 height={40}
-                                className="
-                                    h-8
-                                    w-auto
-                                    object-contain
-                                    sm:h-9
-                                "
+                                className="h-8 w-auto object-contain sm:h-9"
                                 priority
                             />
                         </Link>
                     </div>
 
-                    {/* =================================================
-                        STICKY NAV PILL (MIDDLE ONLY)
-                    ================================================== */}
+                    {/* DESKTOP NAV */}
                     <div className="pointer-events-auto hidden lg:block mx-auto">
                         <nav
                             ref={navPillRef}
-                            className="
-                                flex
-                                h-[60px]
-                                items-center
-                                gap-1
-                                rounded-full
-                                border
-                                border-white/[0.09]
-                                bg-black/[0.45]
-                                px-4
-                                shadow-[0_12px_40px_rgba(0,0,0,0.2)]
-                                backdrop-blur-[18px]
-                                transition-all
-                            "
+                            className="flex h-[60px] items-center gap-1 rounded-full border border-white/[0.09] bg-black/[0.45] px-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)] backdrop-blur-[18px]"
                         >
-                            <DesktopLink
-                                href="/pages/about"
-                                label="About"
-                            />
+                            <DesktopLink href="/pages/about" label="About" />
 
-                            {/* SERVICES DROPDOWN */}
+                            {/* SERVICES */}
                             <div
                                 className="relative"
                                 onMouseEnter={() => setIsServicesOpen(true)}
@@ -228,136 +242,37 @@ export default function Navbar() {
                             >
                                 <button
                                     type="button"
-                                    className="
-                                        group
-                                        relative
-                                        flex
-                                        items-center
-                                        gap-1.5
-                                        rounded-full
-                                        px-3.5
-                                        py-2.5
-                                        text-[12px]
-                                        font-medium
-                                        tracking-wide
-                                        text-white/50
-                                        transition-all
-                                        duration-300
-                                        hover:bg-white/[0.05]
-                                        hover:text-white
-                                    "
+                                    className="services-button group relative flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide text-white/50 transition-all duration-300 hover:bg-black/[0.05]"
                                 >
                                     <span>Services</span>
 
                                     <motion.span
-                                        animate={{
-                                            rotate: isServicesOpen ? 180 : 0,
-                                        }}
-                                        transition={{
-                                            duration: 0.25,
-                                            ease: 'easeOut',
-                                        }}
+                                        animate={{ rotate: isServicesOpen ? 180 : 0 }}
+                                        transition={{ duration: 0.25, ease: 'easeOut' }}
                                     >
-                                        <ChevronDown
-                                            className="
-                                                h-3.5
-                                                w-3.5
-                                                text-white/35
-                                            "
-                                        />
+                                        <ChevronDown className="desktop-nav-icon h-3.5 w-3.5 text-white/35" />
                                     </motion.span>
                                 </button>
 
-                                {/* SERVICES POPUP */}
+                                {/* SERVICES DROPDOWN */}
                                 <AnimatePresence>
                                     {isServicesOpen && (
                                         <motion.div
-                                            initial={{
-                                                opacity: 0,
-                                                y: 10,
-                                                scale: 0.96,
-                                            }}
-                                            animate={{
-                                                opacity: 1,
-                                                y: 0,
-                                                scale: 1,
-                                            }}
-                                            exit={{
-                                                opacity: 0,
-                                                y: 8,
-                                                scale: 0.97,
-                                            }}
-                                            transition={{
-                                                duration: 0.22,
-                                                ease: [0.22, 1, 0.36, 1],
-                                            }}
-                                            className="
-                                                absolute
-                                                left-1/2
-                                                top-[calc(100%+12px)]
-                                                w-[285px]
-                                                -translate-x-1/2
-                                            "
+                                            initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                                            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                                            className="absolute left-1/2 top-[calc(100%+12px)] w-[285px] -translate-x-1/2"
                                         >
-                                            <div
-                                                className="
-                                                    absolute
-                                                    left-1/2
-                                                    top-[-5px]
-                                                    h-2.5
-                                                    w-2.5
-                                                    -translate-x-1/2
-                                                    rotate-45
-                                                    border-l
-                                                    border-t
-                                                    border-white/[0.10]
-                                                    bg-[#101311]
-                                                "
-                                            />
+                                            <div className="absolute left-1/2 top-[-5px] h-2.5 w-2.5 -translate-x-1/2 rotate-45 border-l border-t border-white/[0.10] bg-[#101311]" />
 
-                                            <div
-                                                className="
-                                                    relative
-                                                    overflow-hidden
-                                                    rounded-[22px]
-                                                    border
-                                                    border-white/[0.10]
-                                                    bg-[#101311]/95
-                                                    p-2
-                                                    shadow-[0_30px_90px_rgba(0,0,0,0.42)]
-                                                    backdrop-blur-2xl
-                                                "
-                                            >
-                                                <div
-                                                    className="
-                                                        flex
-                                                        items-center
-                                                        justify-between
-                                                        px-4
-                                                        pb-2
-                                                        pt-3
-                                                    "
-                                                >
-                                                    <span
-                                                        className="
-                                                            text-[9px]
-                                                            font-medium
-                                                            uppercase
-                                                            tracking-[0.25em]
-                                                            text-white/25
-                                                        "
-                                                    >
+                                            <div className="relative overflow-hidden rounded-[22px] border border-white/[0.10] bg-[#101311]/95 p-2 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl">
+                                                <div className="flex items-center justify-between px-4 pb-2 pt-3">
+                                                    <span className="text-[9px] font-medium uppercase tracking-[0.25em] text-white/25">
                                                         Services
                                                     </span>
 
-                                                    <span
-                                                        className="
-                                                            h-1.5
-                                                            w-1.5
-                                                            rounded-full
-                                                            bg-white/30
-                                                        "
-                                                    />
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-white/30" />
                                                 </div>
 
                                                 <div className="space-y-0.5">
@@ -366,65 +281,23 @@ export default function Navbar() {
                                                             key={item.href}
                                                             initial={{ opacity: 0, y: 5 }}
                                                             animate={{ opacity: 1, y: 0 }}
-                                                            transition={{
-                                                                delay: index * 0.035,
-                                                                duration: 0.25,
-                                                            }}
+                                                            transition={{ delay: index * 0.035, duration: 0.25 }}
                                                         >
                                                             <Link
                                                                 href={item.href}
-                                                                className="
-                                                                    group
-                                                                    flex
-                                                                    items-center
-                                                                    justify-between
-                                                                    rounded-[15px]
-                                                                    px-4
-                                                                    py-3
-                                                                    transition-all
-                                                                    duration-300
-                                                                    hover:bg-white/[0.06]
-                                                                "
+                                                                className="group flex items-center justify-between rounded-[15px] px-4 py-3 transition-all duration-300 hover:bg-white/[0.06]"
                                                             >
                                                                 <div className="flex items-center gap-3">
-                                                                    <span
-                                                                        className="
-                                                                            text-[9px]
-                                                                            tabular-nums
-                                                                            text-white/20
-                                                                        "
-                                                                    >
+                                                                    <span className="text-[9px] tabular-nums text-white/20">
                                                                         0{index + 1}
                                                                     </span>
 
-                                                                    <span
-                                                                        className="
-                                                                            text-[12px]
-                                                                            font-medium
-                                                                            text-white/55
-                                                                            transition-colors
-                                                                            duration-300
-                                                                            group-hover:text-white
-                                                                        "
-                                                                    >
+                                                                    <span className="text-[12px] font-medium text-white/55 transition-colors duration-300 group-hover:text-white">
                                                                         {item.label}
                                                                     </span>
                                                                 </div>
 
-                                                                <ArrowUpRight
-                                                                    className="
-                                                                        h-3.5
-                                                                        w-3.5
-                                                                        -translate-x-1
-                                                                        translate-y-1
-                                                                        text-white/0
-                                                                        transition-all
-                                                                        duration-300
-                                                                        group-hover:translate-x-0
-                                                                        group-hover:translate-y-0
-                                                                        group-hover:text-white/60
-                                                                    "
-                                                                />
+                                                                <ArrowUpRight className="h-3.5 w-3.5 -translate-x-1 translate-y-1 text-white/0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-white/60" />
                                                             </Link>
                                                         </motion.div>
                                                     ))}
@@ -435,123 +308,37 @@ export default function Navbar() {
                                 </AnimatePresence>
                             </div>
 
-                            {/* NAV ITEMS: PORTFOLIO TO PRICING */}
+                            {/* OTHER NAV ITEMS */}
                             {NAV_ITEMS.slice(1).map((item) => (
-                                <DesktopLink
-                                    key={item.href}
-                                    href={item.href}
-                                    label={item.label}
-                                />
+                                <DesktopLink key={item.href} href={item.href} label={item.label} />
                             ))}
                         </nav>
                     </div>
 
-                    {/* =================================================
-                        NON-STICKY ENHANCED CTA (RIGHT)
-                    ================================================== */}
+                    {/* FIXED VISIBILITY FOR CTA BUTTON */}
                     <div ref={ctaRef} className="pointer-events-auto hidden lg:block bg-transparent">
                         <Link
                             href="/contact"
-                            className="
-                                group
-                                relative
-                                inline-flex
-                                items-center
-                                justify-center
-                                gap-2.5
-                                overflow-hidden
-                                rounded-full
-                                border
-                                border-white/20
-                                bg-transparent
-                                px-6
-                                py-3
-                                backdrop-blur-md
-                                transition-all
-                                duration-500
-                                hover:border-white
-                                hover:bg-white
-                                hover:shadow-[0_0_25px_rgba(255,255,255,0.3)]
-                            "
+                            className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full border border-black/80 bg-black px-6 py-3 shadow-md transition-all duration-300 hover:bg-black/90 hover:shadow-lg"
                         >
-                            <Sparkles className="h-3.5 w-3.5 text-white/70 transition-colors duration-300 group-hover:text-black" />
+                            <Sparkles className="h-3.5 w-3.5 text-white transition-transform duration-300 group-hover:scale-110" />
 
-                            <span
-                                className="
-                                    text-[11px]
-                                    font-bold
-                                    uppercase
-                                    tracking-[0.18em]
-                                    text-white
-                                    transition-colors
-                                    duration-300
-                                    group-hover:text-black
-                                "
-                            >
-                                Let's Talk
+                            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+                                Let&apos;s Talk
                             </span>
 
                             <div className="relative flex h-4 w-4 overflow-hidden">
-                                <ArrowUpRight
-                                    className="
-                                        absolute
-                                        inset-0
-                                        h-4
-                                        w-4
-                                        text-white
-                                        transition-all
-                                        duration-300
-                                        group-hover:-translate-y-full
-                                        group-hover:translate-x-full
-                                        group-hover:opacity-0
-                                    "
-                                />
-                                <ArrowUpRight
-                                    className="
-                                        absolute
-                                        inset-0
-                                        h-4
-                                        w-4
-                                        translate-y-full
-                                        -translate-x-full
-                                        text-black
-                                        opacity-0
-                                        transition-all
-                                        duration-300
-                                        group-hover:translate-y-0
-                                        group-hover:translate-x-0
-                                        group-hover:opacity-100
-                                    "
-                                />
+                                <ArrowUpRight className="absolute inset-0 h-4 w-4 text-white transition-all duration-300 group-hover:-translate-y-full group-hover:translate-x-full group-hover:opacity-0" />
+                                <ArrowUpRight className="absolute inset-0 h-4 w-4 translate-y-full -translate-x-full text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:translate-x-0 group-hover:opacity-100" />
                             </div>
                         </Link>
                     </div>
 
-                    {/* =================================================
-                        MOBILE TOGGLE BUTTON
-                    ================================================== */}
+                    {/* MOBILE TOGGLE */}
                     <button
                         type="button"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="
-                            pointer-events-auto
-                            relative
-                            z-[110]
-                            flex
-                            h-11
-                            w-11
-                            items-center
-                            justify-center
-                            rounded-full
-                            border
-                            border-white/[0.10]
-                            bg-transparent
-                            text-white
-                            transition-all
-                            duration-300
-                            hover:bg-white/[0.10]
-                            lg:hidden
-                        "
+                        className="pointer-events-auto relative z-[110] flex h-11 w-11 items-center justify-center rounded-full border border-black/20 bg-white/80 text-black shadow-sm transition-all duration-300 hover:bg-white lg:hidden"
                         aria-label="Toggle navigation"
                     >
                         <AnimatePresence mode="wait" initial={false}>
@@ -579,9 +366,7 @@ export default function Navbar() {
                 </header>
             </div>
 
-            {/* =====================================================
-                BOTTOM RIGHT CALL NOW FLOATING BUTTON
-            ====================================================== */}
+            {/* CALL BUTTON */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -589,65 +374,21 @@ export default function Navbar() {
                 className="fixed bottom-6 right-6 z-[100]"
             >
                 <a
-                    href="tel:+1234567890" // Replace with your phone number
+                    href="tel:+1234567890"
                     aria-label="Call Now"
-                    className="
-                        group
-                        relative
-                        flex
-                        items-center
-                        gap-3
-                        rounded-full
-                        border
-                        border-white/20
-                        bg-black/60
-                        px-4
-                        py-3
-                        shadow-[0_10px_30px_rgba(0,0,0,0.5)]
-                        backdrop-blur-xl
-                        transition-all
-                        duration-300
-                        hover:scale-105
-                        hover:border-white/40
-                        hover:bg-black/80
-                    "
+                    className="group relative flex items-center gap-3 rounded-full border border-black/10 bg-black px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-300 hover:scale-105"
                 >
-                    <div
-                        className="
-                            flex
-                            h-9
-                            w-9
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-white
-                            text-black
-                            transition-transform
-                            duration-300
-                            group-hover:rotate-12
-                        "
-                    >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:rotate-12">
                         <PhoneCall className="h-4 w-4" />
                     </div>
 
-                    <span
-                        className="
-                            pr-2
-                            text-[11px]
-                            font-bold
-                            uppercase
-                            tracking-[0.15em]
-                            text-white
-                        "
-                    >
+                    <span className="pr-2 text-[11px] font-bold uppercase tracking-[0.15em] text-white">
                         Call Now
                     </span>
                 </a>
             </motion.div>
 
-            {/* =====================================================
-                MOBILE MENU OVERLAY
-            ====================================================== */}
+            {/* MOBILE MENU */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
@@ -655,78 +396,30 @@ export default function Navbar() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="
-                            fixed
-                            inset-3
-                            z-[90]
-                            flex
-                            flex-col
-                            overflow-y-auto
-                            rounded-[30px]
-                            border
-                            border-white/[0.10]
-                            bg-[#090b0a]/95
-                            px-6
-                            pb-7
-                            pt-28
-                            shadow-[0_30px_100px_rgba(0,0,0,0.5)]
-                            backdrop-blur-3xl
-                            lg:hidden
-                        "
+                        className="fixed inset-3 z-[90] flex flex-col overflow-y-auto rounded-[30px] border border-black/[0.10] bg-white/95 px-6 pb-7 pt-28 shadow-[0_30px_100px_rgba(0,0,0,0.2)] backdrop-blur-3xl lg:hidden"
                     >
                         <div className="relative flex flex-1 flex-col">
                             <div className="mb-7">
-                                <span
-                                    className="
-                                        text-[9px]
-                                        uppercase
-                                        tracking-[0.3em]
-                                        text-white/25
-                                    "
-                                >
+                                <span className="text-[9px] uppercase tracking-[0.3em] text-black/40 font-bold">
                                     Menu
                                 </span>
                             </div>
 
                             <div>
-                                <MobileLink
-                                    href="/pages/about"
-                                    label="About"
-                                    onClick={closeMobileMenu}
-                                />
+                                <MobileLink href="/pages/about" label="About" onClick={closeMobileMenu} />
 
-                                {/* SERVICES ACCORDION */}
-                                <div className="border-b border-white/[0.07]">
+                                <div className="border-b border-black/[0.07]">
                                     <button
                                         type="button"
-                                        onClick={() =>
-                                            setIsMobileServicesOpen(!isMobileServicesOpen)
-                                        }
-                                        className="
-                                            flex
-                                            w-full
-                                            items-center
-                                            justify-between
-                                            py-4
-                                        "
+                                        onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                                        className="flex w-full items-center justify-between py-4"
                                     >
-                                        <span
-                                            className="
-                                                text-[22px]
-                                                font-medium
-                                                tracking-[-0.04em]
-                                                text-white/70
-                                            "
-                                        >
+                                        <span className="text-[22px] font-medium tracking-[-0.04em] text-black">
                                             Services
                                         </span>
 
-                                        <motion.div
-                                            animate={{
-                                                rotate: isMobileServicesOpen ? 180 : 0,
-                                            }}
-                                        >
-                                            <ChevronDown className="h-5 w-5 text-white/30" />
+                                        <motion.div animate={{ rotate: isMobileServicesOpen ? 180 : 0 }}>
+                                            <ChevronDown className="h-5 w-5 text-black/60" />
                                         </motion.div>
                                     </button>
 
@@ -744,23 +437,13 @@ export default function Navbar() {
                                                             key={item.href}
                                                             href={item.href}
                                                             onClick={closeMobileMenu}
-                                                            className="
-                                                                group
-                                                                flex
-                                                                items-center
-                                                                justify-between
-                                                                rounded-xl
-                                                                px-3
-                                                                py-2.5
-                                                                transition-colors
-                                                                hover:bg-white/[0.05]
-                                                            "
+                                                            className="group flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-black/[0.05]"
                                                         >
-                                                            <span className="text-sm text-white/40 group-hover:text-white/75">
+                                                            <span className="text-sm font-medium text-black/70 group-hover:text-black">
                                                                 {item.label}
                                                             </span>
 
-                                                            <ArrowUpRight className="h-3.5 w-3.5 text-white/20 group-hover:text-white/60" />
+                                                            <ArrowUpRight className="h-3.5 w-3.5 text-black/40 group-hover:text-black" />
                                                         </Link>
                                                     ))}
                                                 </div>
@@ -783,34 +466,13 @@ export default function Navbar() {
                                 <Link
                                     href="/contact"
                                     onClick={closeMobileMenu}
-                                    className="
-                                        group
-                                        flex
-                                        w-full
-                                        items-center
-                                        justify-between
-                                        rounded-full
-                                        bg-white
-                                        px-6
-                                        py-4
-                                        transition-transform
-                                        duration-300
-                                        hover:scale-[1.015]
-                                    "
+                                    className="group flex w-full items-center justify-between rounded-full bg-black px-6 py-4 transition-transform duration-300 hover:scale-[1.015]"
                                 >
-                                    <span
-                                        className="
-                                            text-[11px]
-                                            font-bold
-                                            uppercase
-                                            tracking-[0.15em]
-                                            text-black
-                                        "
-                                    >
-                                        Let's Talk
+                                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-white">
+                                        Let&apos;s Talk
                                     </span>
 
-                                    <ArrowUpRight className="h-5 w-5 text-black transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                                    <ArrowUpRight className="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                                 </Link>
                             </div>
                         </div>
@@ -825,21 +487,7 @@ function DesktopLink({ href, label }) {
     return (
         <Link
             href={href}
-            className="
-                group
-                relative
-                rounded-full
-                px-3.5
-                py-2.5
-                text-[12px]
-                font-medium
-                tracking-wide
-                text-white/50
-                transition-all
-                duration-300
-                hover:bg-white/[0.05]
-                hover:text-white
-            "
+            className="desktop-nav-text group relative rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide text-white/50 transition-all duration-300 hover:bg-black/[0.05]"
         >
             {label}
         </Link>
@@ -851,42 +499,13 @@ function MobileLink({ href, label, onClick }) {
         <Link
             href={href}
             onClick={onClick}
-            className="
-                group
-                flex
-                items-center
-                justify-between
-                border-b
-                border-white/[0.07]
-                py-4
-            "
+            className="group flex items-center justify-between border-b border-black/[0.07] py-4"
         >
-            <span
-                className="
-                    text-[22px]
-                    font-medium
-                    tracking-[-0.04em]
-                    text-white/70
-                    transition-colors
-                    duration-300
-                    group-hover:text-white
-                "
-            >
+            <span className="text-[22px] font-medium tracking-[-0.04em] text-black/80 transition-colors duration-300 group-hover:text-black">
                 {label}
             </span>
 
-            <ArrowUpRight
-                className="
-                    h-5
-                    w-5
-                    text-white/20
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-0.5
-                    group-hover:translate-x-0.5
-                    group-hover:text-white/60
-                "
-            />
+            <ArrowUpRight className="h-5 w-5 text-black/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-black" />
         </Link>
     );
 }

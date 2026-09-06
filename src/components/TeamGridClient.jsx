@@ -8,14 +8,16 @@ import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa6'
 export default function TeamGridClient({ initialMembers }) {
   if (!initialMembers || initialMembers.length === 0) {
     return (
-      <div className="text-center py-20 border border-dashed border-gray-300">
-        <p className="text-gray-500 text-lg">No team members added yet.</p>
+      <div className="pt-20 lg:pt-24 max-w-7xl mx-auto px-6 lg:px-12 pb-20">
+        <div className="text-center py-20 border border-dashed border-gray-300">
+          <p className="text-gray-500 text-lg">No team members added yet.</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <>
+    <section className="pt-20 lg:pt-24 pb-16 max-w-7xl mx-auto px-6 lg:px-12">
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -106,6 +108,6 @@ export default function TeamGridClient({ initialMembers }) {
           </motion.div>
         ))}
       </div>
-    </>
+    </section>
   )
 }

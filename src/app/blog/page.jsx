@@ -22,7 +22,7 @@ export default async function BlogPage({ searchParams }) {
       .populate('category')
       .sort({ createdAt: -1 })
       .lean()
-    
+
     // Serialize Mongoose ObjectIds / dates for Next.js Server Components
     posts = JSON.parse(JSON.stringify(posts))
   }
@@ -31,8 +31,9 @@ export default async function BlogPage({ searchParams }) {
 
   return (
     <main className="w-full min-h-screen bg-white text-gray-900 font-sans">
-      <div className="max-w-7xl mx-auto px-6 py-16 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
+      {/* Updated padding top (pt-32 lg:pt-40) to prevent navbar overlap */}
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-16 lg:pt-40 lg:pb-16 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+
         {/* Main Feed (Left Side) */}
         <section className="lg:col-span-8 space-y-16">
           {query && (

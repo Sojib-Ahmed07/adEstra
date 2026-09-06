@@ -4,8 +4,10 @@ import React from 'react';
 
 export default function Hero() {
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-28 sm:pt-36 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen">
-
+        <div
+            id="hero"
+            className="max-w-7xl mx-auto px-4 sm:px-8 pt-28 sm:pt-36 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen"
+        >
             {/* Left Column */}
             <div className="space-y-12">
                 <h1 className="text-7xl sm:text-8xl lg:text-[90px] font-extrabold text-white tracking-tight leading-[0.98] drop-shadow-lg">
@@ -22,12 +24,17 @@ export default function Hero() {
                             strokeWidth="2"
                             viewBox="0 0 24 24"
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" />
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25"
+                            />
                         </svg>
                     </div>
 
                     <p className="text-white text-base sm:text-lg font-medium leading-relaxed drop-shadow-md">
-                        From Concept to Creation — Beautiful design has the power to captivate audiences
+                        From Concept to Creation — Beautiful design has the power
+                        to captivate audiences
                     </p>
                 </div>
             </div>
@@ -44,17 +51,25 @@ export default function Hero() {
 
                 <div className="mt-auto space-y-2 text-left lg:text-left pt-12 drop-shadow-md">
                     <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-wide">
-                        Web <span className="font-extrabold text-white">design</span> / <span className="font-extrabold text-white">dev</span>
+                        Web{' '}
+                        <span className="font-extrabold text-white">
+                            design
+                        </span>{' '}
+                        /{' '}
+                        <span className="font-extrabold text-white">
+                            dev
+                        </span>
                     </h2>
+
                     <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white/95 tracking-wide">
                         services /
                     </h2>
+
                     <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-wide">
                         marketing
                     </h2>
                 </div>
             </div>
-
         </div>
     );
 }

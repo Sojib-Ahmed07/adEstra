@@ -130,9 +130,9 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="w-full min-h-screen bg-white text-gray-900 font-sans py-20 px-6 lg:px-16 overflow-hidden">
+    <main className="w-full min-h-screen bg-white text-gray-900 font-sans pt-28 lg:pt-36 pb-20 px-6 lg:px-16 overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-28">
-        
+
         {/* SECTION 1: Locations Grid */}
         <motion.section
           variants={staggerContainer}
@@ -151,7 +151,7 @@ export default function ContactPage() {
               }}
               className="group border border-gray-200 p-8 rounded-sm bg-white flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:border-black transition-all duration-300"
             >
-              <motion.h3 
+              <motion.h3
                 variants={scaleUp}
                 className="text-2xl font-bold tracking-tight text-gray-900 mb-6 relative pb-2"
               >
@@ -324,7 +324,7 @@ export default function ContactPage() {
             className="lg:col-span-6 lg:pl-12 space-y-12"
           >
             <div>
-              <motion.div 
+              <motion.div
                 variants={staggerContainer}
                 className="flex flex-wrap text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 mb-8 overflow-hidden"
               >

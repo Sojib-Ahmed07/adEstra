@@ -91,9 +91,9 @@ export default function AboutPage() {
         <div className="w-full bg-white text-slate-900 font-sans min-h-screen overflow-x-hidden">
 
             {/* ========================================================= */}
-            {/* SECTION 1: HERO & STATS                                 */}
+            {/* SECTION 1: HERO & STATS                                   */}
             {/* ========================================================= */}
-            <section className="w-full px-6 sm:px-12 lg:px-16 pt-16 pb-24 border-b border-slate-100">
+            <section className="w-full px-6 sm:px-12 lg:px-16 pt-28 lg:pt-36 pb-24 border-b border-slate-100">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -161,7 +161,7 @@ export default function AboutPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* SECTION 2: BRAND STORY & MISSION                        */}
+            {/* SECTION 2: BRAND STORY & MISSION                          */}
             {/* ========================================================= */}
             <section id="story" className="w-full px-6 sm:px-12 lg:px-16 py-20 border-b border-slate-100">
                 <motion.div
@@ -263,7 +263,7 @@ export default function AboutPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* SECTION 4: FAQ SECTION & CTA                            */}
+            {/* SECTION 4: FAQ SECTION & CTA                             */}
             {/* ========================================================= */}
             <section className="w-full px-6 sm:px-12 lg:px-16 py-24">
                 <motion.div
