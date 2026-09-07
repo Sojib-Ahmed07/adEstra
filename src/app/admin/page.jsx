@@ -11,12 +11,14 @@ export default async function AdminPage() {
 
   if (!authenticated) {
     return (
-      <AdminDashboardClient
-        isAuthenticated={false}
-        initialPosts={[]}
-        categories={[]}
-        initialPortfolio={[]}
-      />
+      <main className="w-full pt-28 lg:pt-36 min-h-screen">
+        <AdminDashboardClient
+          isAuthenticated={false}
+          initialPosts={[]}
+          categories={[]}
+          initialPortfolio={[]}
+        />
+      </main>
     )
   }
 
@@ -33,11 +35,13 @@ export default async function AdminPage() {
   const portfolio = JSON.parse(JSON.stringify(portfolioDocs))
 
   return (
-    <AdminDashboardClient
-      isAuthenticated={true}
-      initialPosts={posts}
-      categories={categories}
-      initialPortfolio={portfolio}
-    />
+    <main className="w-full pt-28 lg:pt-36 min-h-screen">
+      <AdminDashboardClient
+        isAuthenticated={true}
+        initialPosts={posts}
+        categories={categories}
+        initialPortfolio={portfolio}
+      />
+    </main>
   )
 }

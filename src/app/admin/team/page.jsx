@@ -8,7 +8,7 @@ export default async function AdminTeamPage() {
 
   if (!authenticated) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-50">
+      <main className="min-h-screen flex items-center justify-center bg-gray-50 pt-28 lg:pt-36">
         <p className="text-sm font-semibold text-red-600">
           Unauthorized. Please log in at /admin first.
         </p>
@@ -18,5 +18,9 @@ export default async function AdminTeamPage() {
 
   const members = await getTeamMembers()
 
-  return <AdminTeamClient initialMembers={members} />
+  return (
+    <main className="w-full pt-28 lg:pt-36 min-h-screen">
+      <AdminTeamClient initialMembers={members} />
+    </main>
+  )
 }
