@@ -3,6 +3,12 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FiSun, FiSend, FiCheckCircle, FiAlertCircle, FiLoader } from 'react-icons/fi'
+import emailjs from '@emailjs/browser'
+
+// EmailJS Credentials
+const EMAILJS_SERVICE_ID = 'service_b7l4rgh'
+const EMAILJS_TEMPLATE_ID = 'template_8r063li'
+const EMAILJS_PUBLIC_KEY = 'vwV13BT0NFaSoDfp0'
 
 // Animation Variants
 const staggerContainer = {
@@ -47,20 +53,20 @@ const locations = [
   {
     title: 'Pennsylvania',
     image:
-      'https://images.unsplash.com/photo-1517309260469-be69e5720138?auto=format&fit=crop&w=800&q=80',
+      'https://res.cloudinary.com/gd78bssj/image/upload/v1789006375/images-1.jpg',
     alt: 'Pennsylvania Architecture',
   },
   {
     title: 'Bangladesh',
     image:
-      'https://images.unsplash.com/photo-1628172904838-89c5f87b3e1c?auto=format&fit=crop&w=800&q=80',
+      'https://res.cloudinary.com/gd78bssj/image/upload/v1789006375/images-2.jpg',
     alt: 'Bangladesh National Monument',
   },
   {
     title: 'Tasmania',
     image:
       'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80',
-    alt: 'Tasmania Harbor',
+    alt: 'Tasmania Landscape',
   },
 ]
 
@@ -74,6 +80,7 @@ export default function ContactPage() {
     subject: '',
     message: '',
   })
+
   const [status, setStatus] = useState({
     submitting: false,
     success: false,
@@ -90,41 +97,35 @@ export default function ContactPage() {
     setStatus({ submitting: true, success: false, error: false, message: '' })
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          // Replace with your Web3Forms Access Key
-          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || 'YOUR_ACCESS_KEY_HERE',
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || 'New Contact Form Submission',
-          message: formData.message || 'No additional message provided.',
-        }),
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        setStatus({
-          submitting: false,
-          success: true,
-          error: false,
-          message: 'Thank you! Your message has been sent successfully.',
-        })
-        setFormData({ name: '', email: '', subject: '', message: '' })
-      } else {
-        throw new Error(result.message || 'Something went wrong.')
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject || `New Contact Form Message from ${formData.name}`,
+        message: formData.message,
+        to_email: 'contact@adestrasolutions.com',
       }
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      )
+
+      setStatus({
+        submitting: false,
+        success: true,
+        error: false,
+        message: 'Thank you! Your message has been sent successfully.',
+      })
+      setFormData({ name: '', email: '', subject: '', message: '' })
     } catch (err) {
+      console.error('EmailJS Error:', err)
       setStatus({
         submitting: false,
         success: false,
         error: true,
-        message: err.message || 'Failed to send message. Please try again.',
+        message: 'Failed to send message. Please try again.',
       })
     }
   }
@@ -271,6 +272,7 @@ export default function ContactPage() {
                   id="message"
                   name="message"
                   rows={4}
+                  required
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Tell us about your project..."
@@ -278,7 +280,7 @@ export default function ContactPage() {
                 />
               </motion.div>
 
-              {/* Success / Error Notification */}
+              {/* Status Alerts */}
               {status.success && (
                 <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-sm">
                   <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -375,4 +377,4 @@ export default function ContactPage() {
       </div>
     </main>
   )
-}
+} 

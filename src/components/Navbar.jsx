@@ -11,7 +11,6 @@ import {
     ChevronDown,
     ArrowUpRight,
     Sparkles,
-    PhoneCall,
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -366,7 +365,7 @@ export default function Navbar() {
                 </header>
             </div>
 
-            {/* CALL BUTTON */}
+            {/* WHATSAPP BUTTON */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -374,16 +373,24 @@ export default function Navbar() {
                 className="fixed bottom-6 right-6 z-[100]"
             >
                 <a
-                    href="tel:+1234567890"
-                    aria-label="Call Now"
-                    className="group relative flex items-center gap-3 rounded-full border border-black/10 bg-black px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-300 hover:scale-105"
+                    href="https://wa.me/8801685655696"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Chat on WhatsApp"
+                    className="group relative flex items-center gap-3 rounded-full border border-black/10 bg-[#25D366] px-4 py-3 shadow-[0_10px_30px_rgba(37,211,102,0.4)] backdrop-blur-xl transition-all duration-300 hover:scale-105"
                 >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:rotate-12">
-                        <PhoneCall className="h-4 w-4" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#25D366] transition-transform duration-300 group-hover:rotate-12">
+                        <svg
+                            className="h-5 w-5 fill-current"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.763.459 3.483 1.332 5.002L2 22l5.127-1.334a9.948 9.948 0 004.885 1.282h.004c5.506 0 9.99-4.478 9.99-9.985 0-2.667-1.039-5.176-2.926-7.062A9.923 9.923 0 0012.012 2zm0 18.313h-.003a8.27 8.27 0 01-4.218-1.157l-.303-.18-3.132.816.834-3.045-.198-.314a8.27 8.27 0 01-1.272-4.442c0-4.561 3.712-8.273 8.275-8.273 2.21 0 4.288.861 5.85 2.425a8.228 8.228 0 012.422 5.85c0 4.562-3.712 8.274-8.255 8.274zm4.537-6.202c-.248-.124-1.468-.724-1.696-.807-.228-.083-.394-.124-.56.124-.166.248-.642.807-.787.973-.145.166-.29.186-.538.062a6.792 6.792 0 01-1.996-1.233 7.487 7.487 0 01-1.383-1.722c-.145-.248-.016-.383.108-.506.112-.112.248-.29.372-.435.124-.145.166-.248.248-.414.083-.166.042-.311-.02-.435-.062-.124-.56-1.348-.767-1.846-.201-.486-.406-.42-.56-.428l-.476-.008c-.166 0-.435.062-.663.311-.228.248-.87.85-.87 2.073 0 1.222.891 2.404 1.015 2.57.124.166 1.753 2.677 4.248 3.755.594.257 1.058.41 1.42.525.596.189 1.138.162 1.567.098.479-.071 1.468-.6 1.675-1.18.207-.58.207-1.076.145-1.18-.062-.104-.228-.166-.476-.29z" />
+                        </svg>
                     </div>
 
                     <span className="pr-2 text-[11px] font-bold uppercase tracking-[0.15em] text-white">
-                        Call Now
+                        WhatsApp
                     </span>
                 </a>
             </motion.div>
