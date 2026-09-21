@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -38,155 +38,63 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
     const pathname = usePathname();
+    const isHomePage = pathname === '/' || pathname === '';
 
     const containerRef = useRef(null);
-    const navPillRef = useRef(null);
     const logoRef = useRef(null);
     const ctaRef = useRef(null);
+
+    // Dark by default on homepage, light everywhere else
+    const [isScrolled, setIsScrolled] = useState(false);
 
     const [isServicesOpen, setIsServicesOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
 
+    // Robust scroll listener tied to actual window scroll offset
+    useEffect(() => {
+        if (!isHomePage) return;
+
+        const handleScroll = () => {
+            // Adjust '600' to match your Hero height (e.g., window.innerHeight - 80)
+            const heroThreshold = window.innerHeight ? window.innerHeight - 100 : 600;
+            if (window.scrollY > heroThreshold) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        // Check on initial load
+        handleScroll();
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isHomePage, pathname]);
+
+    // GSAP Entrance & Shrink
     useGSAP(
         () => {
-            const navPill = navPillRef.current;
             const logo = logoRef.current;
             const cta = ctaRef.current;
 
-            if (!navPill) return;
-
-            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-
-            const hero = document.getElementById('hero');
-
-            /* ENTRANCE ANIMATION */
             gsap.fromTo(
                 containerRef.current,
                 { y: -30, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, delay: 0.1, ease: 'power4.out' }
+                { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out' }
             );
 
-            /* HELPER FUNCTIONS */
-            const setDarkNavbar = () => {
-                gsap.to(navPill, {
-                    backgroundColor: 'rgba(10, 12, 11, 0.45)',
-                    borderColor: 'rgba(255, 255, 255, 0.09)',
-                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.20)',
-                    backdropFilter: 'blur(18px)',
-                    scale: 1,
-                    duration: 0.45,
-                    ease: 'power3.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.desktop-nav-text', {
-                    color: 'rgba(255, 255, 255, 0.50)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.services-button', {
-                    color: 'rgba(255, 255, 255, 0.50)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.desktop-nav-icon', {
-                    color: 'rgba(255, 255, 255, 0.35)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-            };
-
-            const setLightNavbar = () => {
-                gsap.to(navPill, {
-                    backgroundColor: 'rgba(255, 255, 255, 0.94)',
-                    borderColor: 'rgba(0, 0, 0, 0.10)',
-                    boxShadow: '0 18px 50px rgba(0, 0, 0, 0.10)',
-                    backdropFilter: 'blur(24px)',
-                    scale: 1,
-                    duration: 0.45,
-                    ease: 'power3.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.desktop-nav-text', {
-                    color: 'rgba(0, 0, 0, 0.75)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.services-button', {
-                    color: 'rgba(0, 0, 0, 0.75)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-                gsap.to('.desktop-nav-icon', {
-                    color: 'rgba(0, 0, 0, 0.50)',
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
-            };
-
-            /* SCROLL LOGIC FOR HERO (HOME PAGE ONLY) */
-            if (hero) {
-                ScrollTrigger.create({
-                    trigger: hero,
-                    start: 'bottom top',
-                    onEnter: () => setLightNavbar(),
-                    onLeaveBack: () => setDarkNavbar(),
-                });
-
-                ScrollTrigger.create({
-                    start: '50px top',
-                    onEnter: () => {
-                        if (logo) gsap.to(logo, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
-                        if (cta) gsap.to(cta, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
-
-                        const heroBottom = hero.getBoundingClientRect().bottom;
-                        if (heroBottom > 0) {
-                            gsap.to(navPill, {
-                                backgroundColor: 'rgba(10, 12, 11, 0.85)',
-                                borderColor: 'rgba(255, 255, 255, 0.18)',
-                                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.45)',
-                                backdropFilter: 'blur(24px)',
-                                scale: 0.98,
-                                duration: 0.4,
-                            });
-                        }
-                    },
-                    onLeaveBack: () => {
-                        if (logo) gsap.to(logo, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
-                        if (cta) gsap.to(cta, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
-                        setDarkNavbar();
-                    },
-                });
-
-                const heroBottom = hero.getBoundingClientRect().bottom;
-                if (heroBottom <= 0) {
-                    setLightNavbar();
-                } else {
-                    setDarkNavbar();
-                }
-            } else {
-                setLightNavbar();
-
-                ScrollTrigger.create({
-                    start: '50px top',
-                    onEnter: () => {
-                        if (logo) gsap.to(logo, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
-                        if (cta) gsap.to(cta, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.35 });
-                    },
-                    onLeaveBack: () => {
-                        if (logo) gsap.to(logo, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
-                        if (cta) gsap.to(cta, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.35 });
-                    },
-                });
-            }
-
-            ScrollTrigger.refresh();
+            ScrollTrigger.create({
+                start: '50px top',
+                onEnter: () => {
+                    if (logo) gsap.to(logo, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.3 });
+                    if (cta) gsap.to(cta, { opacity: 0, y: -20, pointerEvents: 'none', duration: 0.3 });
+                },
+                onLeaveBack: () => {
+                    if (logo) gsap.to(logo, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.3 });
+                    if (cta) gsap.to(cta, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.3 });
+                },
+            });
 
             return () => {
                 ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -200,9 +108,11 @@ export default function Navbar() {
         setIsMobileServicesOpen(false);
     };
 
+    // Calculate light mode condition directly
+    const isLight = !isHomePage || isScrolled;
+
     return (
         <>
-            {/* Added mb-8 for extra spacing from page text */}
             <div className="fixed top-0 left-0 right-0 z-[100] w-full pointer-events-none mb-8">
                 <header
                     ref={containerRef}
@@ -228,10 +138,12 @@ export default function Navbar() {
                     {/* DESKTOP NAV */}
                     <div className="pointer-events-auto hidden lg:block mx-auto">
                         <nav
-                            ref={navPillRef}
-                            className="flex h-[60px] items-center gap-1 rounded-full border border-white/[0.09] bg-black/[0.45] px-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)] backdrop-blur-[18px]"
+                            className={`flex h-[60px] items-center gap-1 rounded-full border px-4 transition-all duration-500 ease-out ${isLight
+                                    ? 'bg-white/95 border-black/10 shadow-[0_18px_50px_rgba(0,0,0,0.10)] backdrop-blur-2xl'
+                                    : 'bg-[#0a0c0b]/45 border-white/[0.09] shadow-[0_12px_40px_rgba(0,0,0,0.20)] backdrop-blur-[18px]'
+                                }`}
                         >
-                            <DesktopLink href="/pages/about" label="About" />
+                            <DesktopLink href="/pages/about" label="About" isLight={isLight} />
 
                             {/* SERVICES */}
                             <div
@@ -241,7 +153,8 @@ export default function Navbar() {
                             >
                                 <button
                                     type="button"
-                                    className="services-button group relative flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide text-white/50 transition-all duration-300 hover:bg-black/[0.05]"
+                                    className={`group relative flex items-center gap-1.5 rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide transition-colors duration-300 hover:bg-black/[0.05] ${isLight ? 'text-black/75' : 'text-white/50'
+                                        }`}
                                 >
                                     <span>Services</span>
 
@@ -249,7 +162,10 @@ export default function Navbar() {
                                         animate={{ rotate: isServicesOpen ? 180 : 0 }}
                                         transition={{ duration: 0.25, ease: 'easeOut' }}
                                     >
-                                        <ChevronDown className="desktop-nav-icon h-3.5 w-3.5 text-white/35" />
+                                        <ChevronDown
+                                            className={`h-3.5 w-3.5 transition-colors duration-300 ${isLight ? 'text-black/50' : 'text-white/35'
+                                                }`}
+                                        />
                                     </motion.span>
                                 </button>
 
@@ -309,12 +225,12 @@ export default function Navbar() {
 
                             {/* OTHER NAV ITEMS */}
                             {NAV_ITEMS.slice(1).map((item) => (
-                                <DesktopLink key={item.href} href={item.href} label={item.label} />
+                                <DesktopLink key={item.href} href={item.href} label={item.label} isLight={isLight} />
                             ))}
                         </nav>
                     </div>
 
-                    {/* FIXED VISIBILITY FOR CTA BUTTON */}
+                    {/* CTA BUTTON */}
                     <div ref={ctaRef} className="pointer-events-auto hidden lg:block bg-transparent">
                         <Link
                             href="/contact"
@@ -364,155 +280,18 @@ export default function Navbar() {
                     </button>
                 </header>
             </div>
-
-            {/* WHATSAPP BUTTON */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.4 }}
-                className="fixed bottom-6 right-6 z-[100]"
-            >
-                <a
-                    href="https://wa.me/8801685655696"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Chat on WhatsApp"
-                    className="group relative flex items-center gap-3 rounded-full border border-black/10 bg-[#25D366] px-4 py-3 shadow-[0_10px_30px_rgba(37,211,102,0.4)] backdrop-blur-xl transition-all duration-300 hover:scale-105"
-                >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#25D366] transition-transform duration-300 group-hover:rotate-12">
-                        <svg
-                            className="h-5 w-5 fill-current"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.763.459 3.483 1.332 5.002L2 22l5.127-1.334a9.948 9.948 0 004.885 1.282h.004c5.506 0 9.99-4.478 9.99-9.985 0-2.667-1.039-5.176-2.926-7.062A9.923 9.923 0 0012.012 2zm0 18.313h-.003a8.27 8.27 0 01-4.218-1.157l-.303-.18-3.132.816.834-3.045-.198-.314a8.27 8.27 0 01-1.272-4.442c0-4.561 3.712-8.273 8.275-8.273 2.21 0 4.288.861 5.85 2.425a8.228 8.228 0 012.422 5.85c0 4.562-3.712 8.274-8.255 8.274zm4.537-6.202c-.248-.124-1.468-.724-1.696-.807-.228-.083-.394-.124-.56.124-.166.248-.642.807-.787.973-.145.166-.29.186-.538.062a6.792 6.792 0 01-1.996-1.233 7.487 7.487 0 01-1.383-1.722c-.145-.248-.016-.383.108-.506.112-.112.248-.29.372-.435.124-.145.166-.248.248-.414.083-.166.042-.311-.02-.435-.062-.124-.56-1.348-.767-1.846-.201-.486-.406-.42-.56-.428l-.476-.008c-.166 0-.435.062-.663.311-.228.248-.87.85-.87 2.073 0 1.222.891 2.404 1.015 2.57.124.166 1.753 2.677 4.248 3.755.594.257 1.058.41 1.42.525.596.189 1.138.162 1.567.098.479-.071 1.468-.6 1.675-1.18.207-.58.207-1.076.145-1.18-.062-.104-.228-.166-.476-.29z" />
-                        </svg>
-                    </div>
-
-                    <span className="pr-2 text-[11px] font-bold uppercase tracking-[0.15em] text-white">
-                        WhatsApp
-                    </span>
-                </a>
-            </motion.div>
-
-            {/* MOBILE MENU */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed inset-3 z-[90] flex flex-col overflow-y-auto rounded-[30px] border border-black/[0.10] bg-white/95 px-6 pb-7 pt-28 shadow-[0_30px_100px_rgba(0,0,0,0.2)] backdrop-blur-3xl lg:hidden"
-                    >
-                        <div className="relative flex flex-1 flex-col">
-                            <div className="mb-7">
-                                <span className="text-[9px] uppercase tracking-[0.3em] text-black/40 font-bold">
-                                    Menu
-                                </span>
-                            </div>
-
-                            <div>
-                                <MobileLink href="/pages/about" label="About" onClick={closeMobileMenu} />
-
-                                <div className="border-b border-black/[0.07]">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
-                                        className="flex w-full items-center justify-between py-4"
-                                    >
-                                        <span className="text-[22px] font-medium tracking-[-0.04em] text-black">
-                                            Services
-                                        </span>
-
-                                        <motion.div animate={{ rotate: isMobileServicesOpen ? 180 : 0 }}>
-                                            <ChevronDown className="h-5 w-5 text-black/60" />
-                                        </motion.div>
-                                    </button>
-
-                                    <AnimatePresence>
-                                        {isMobileServicesOpen && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: 'auto', opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                className="overflow-hidden"
-                                            >
-                                                <div className="space-y-1 pb-4 pl-3">
-                                                    {SERVICES_MENU.map((item) => (
-                                                        <Link
-                                                            key={item.href}
-                                                            href={item.href}
-                                                            onClick={closeMobileMenu}
-                                                            className="group flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-black/[0.05]"
-                                                        >
-                                                            <span className="text-sm font-medium text-black/70 group-hover:text-black">
-                                                                {item.label}
-                                                            </span>
-
-                                                            <ArrowUpRight className="h-3.5 w-3.5 text-black/40 group-hover:text-black" />
-                                                        </Link>
-                                                    ))}
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-
-                                {NAV_ITEMS.slice(1).map((item) => (
-                                    <MobileLink
-                                        key={item.href}
-                                        href={item.href}
-                                        label={item.label}
-                                        onClick={closeMobileMenu}
-                                    />
-                                ))}
-                            </div>
-
-                            <div className="mt-auto pt-10">
-                                <Link
-                                    href="/contact"
-                                    onClick={closeMobileMenu}
-                                    className="group flex w-full items-center justify-between rounded-full bg-black px-6 py-4 transition-transform duration-300 hover:scale-[1.015]"
-                                >
-                                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-white">
-                                        Let&apos;s Talk
-                                    </span>
-
-                                    <ArrowUpRight className="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                                </Link>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </>
     );
 }
 
-function DesktopLink({ href, label }) {
+function DesktopLink({ href, label, isLight }) {
     return (
         <Link
             href={href}
-            className="desktop-nav-text group relative rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide text-white/50 transition-all duration-300 hover:bg-black/[0.05]"
+            className={`group relative rounded-full px-3.5 py-2.5 text-[12px] font-medium tracking-wide transition-colors duration-300 hover:bg-black/[0.05] ${isLight ? 'text-black/75' : 'text-white/50'
+                }`}
         >
             {label}
-        </Link>
-    );
-}
-
-function MobileLink({ href, label, onClick }) {
-    return (
-        <Link
-            href={href}
-            onClick={onClick}
-            className="group flex items-center justify-between border-b border-black/[0.07] py-4"
-        >
-            <span className="text-[22px] font-medium tracking-[-0.04em] text-black/80 transition-colors duration-300 group-hover:text-black">
-                {label}
-            </span>
-
-            <ArrowUpRight className="h-5 w-5 text-black/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-black" />
         </Link>
     );
 }

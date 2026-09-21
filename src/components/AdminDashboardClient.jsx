@@ -1,4 +1,3 @@
-// components/AdminDashboardClient.jsx
 'use client'
 
 import { useState } from 'react'
@@ -24,7 +23,7 @@ export default function AdminDashboardClient({
   const [authed, setAuthed] = useState(isAuthenticated)
   const [passwordInput, setPasswordInput] = useState('')
   const [activeTab, setActiveTab] = useState('posts') // 'posts' | 'portfolio'
-  
+
   // Blog Post States
   const [posts, setPosts] = useState(initialPosts || [])
   const [editingPost, setEditingPost] = useState(null)
@@ -42,6 +41,10 @@ export default function AdminDashboardClient({
   const [coverPreview, setCoverPreview] = useState('')
   const [existingGallery, setExistingGallery] = useState([])
   const [processSteps, setProcessSteps] = useState([{ title: '', pointsText: '' }])
+
+  // Category & Conditional Website Link States
+  const [selectedCategory, setSelectedCategory] = useState('websites')
+  const [customCategory, setCustomCategory] = useState('')
 
   // Auth Handlers
   async function handleLogin(e) {
@@ -137,12 +140,25 @@ export default function AdminDashboardClient({
           pointsText: p.points?.join('\n') || '',
         })) || [{ title: '', pointsText: '' }]
       )
+
+      // Category logic for pre-populating
+      const defaultCategories = ['websites', 'marketing', 'media-management', '3d-modeling']
+      const itemCat = (item.category || 'websites').toLowerCase()
+      if (defaultCategories.includes(itemCat)) {
+        setSelectedCategory(itemCat)
+        setCustomCategory('')
+      } else {
+        setSelectedCategory('custom')
+        setCustomCategory(item.category || '')
+      }
     } else {
       setEditingPortfolio(null)
       setExistingCover('')
       setCoverPreview('')
       setExistingGallery([])
       setProcessSteps([{ title: '', pointsText: '' }])
+      setSelectedCategory('websites')
+      setCustomCategory('')
     }
     setIsPortfolioModalOpen(true)
   }
@@ -175,6 +191,10 @@ export default function AdminDashboardClient({
 
     const form = e.target
     const formData = new FormData(form)
+
+    // Determine final category string
+    const finalCategory = selectedCategory === 'custom' ? customCategory : selectedCategory
+    formData.set('category', finalCategory)
 
     const formattedProcess = processSteps.map((step) => ({
       title: step.title,
@@ -295,22 +315,20 @@ export default function AdminDashboardClient({
       <div className="mb-8 border border-slate-200 bg-white p-2 rounded-lg flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wider shadow-sm">
         <button
           onClick={() => setActiveTab('posts')}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === 'posts'
+          className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'posts'
               ? 'bg-slate-900 text-white'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
+            }`}
         >
           Blog Posts
         </button>
 
         <button
           onClick={() => setActiveTab('portfolio')}
-          className={`px-4 py-2 rounded-md transition-colors ${
-            activeTab === 'portfolio'
+          className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'portfolio'
               ? 'bg-slate-900 text-white'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
+            }`}
         >
           Portfolio / Case Studies
         </button>
@@ -378,7 +396,7 @@ export default function AdminDashboardClient({
               <tr>
                 <th className="px-6 py-3">Cover</th>
                 <th className="px-6 py-3">Title & Client</th>
-                <th className="px-6 py-3">Industry</th>
+                <th className="px-6 py-3">Category</th>
                 <th className="px-6 py-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -394,8 +412,8 @@ export default function AdminDashboardClient({
                     </Link>
                     <p className="text-xs text-slate-500">{item.client}</p>
                   </td>
-                  <td className="px-6 py-4 text-xs font-semibold text-slate-500">
-                    {item.industry}
+                  <td className="px-6 py-4 text-xs font-semibold capitalize text-indigo-600">
+                    {item.category || 'websites'}
                   </td>
                   <td className="px-6 py-4 text-right space-x-4">
                     <button
@@ -522,6 +540,64 @@ export default function AdminDashboardClient({
               {editingPortfolio && <input type="hidden" name="id" value={editingPortfolio._id} />}
               <input type="hidden" name="existingCoverImage" value={existingCover} />
 
+              {/* Category Selector */}
+              <div className="p-4 border border-indigo-100 bg-indigo-50/50 rounded-lg space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                      Portfolio Category
+                    </label>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full border border-slate-300 p-2 rounded bg-white font-medium text-slate-900"
+                    >
+                      <option value="websites">Websites</option>
+                      <option value="marketing">Marketing</option>
+                      <option value="media-management">Media Management</option>
+                      <option value="3d-modeling">3D Modeling</option>
+                      <option value="custom">+ Other / Custom Category</option>
+                    </select>
+                  </div>
+
+                  {selectedCategory === 'custom' && (
+                    <div>
+                      <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                        Enter Custom Category Name
+                      </label>
+                      <input
+                        type="text"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                        placeholder="e.g. Graphic Design, Motion Graphics"
+                        required
+                        className="w-full border border-slate-300 p-2 rounded bg-white text-slate-900"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Conditional Website URL Option */}
+                {selectedCategory === 'websites' && (
+                  <div className="pt-2 border-t border-indigo-100">
+                    <label className="block text-xs font-bold uppercase mb-1 text-indigo-900">
+                      Website URL (Live Preview Link for Frame Showcase)
+                    </label>
+                    <input
+                      type="url"
+                      name="websiteUrl"
+                      defaultValue={editingPortfolio?.websiteUrl || ''}
+                      placeholder="https://example.com"
+                      required={selectedCategory === 'websites'}
+                      className="w-full border border-indigo-200 p-2 rounded bg-white text-slate-900"
+                    />
+                    <p className="text-[11px] text-indigo-600 mt-1">
+                      This URL will be rendered live inside an interactive tablet/laptop iframe frame for visitors.
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase mb-1">Title</label>
@@ -537,7 +613,7 @@ export default function AdminDashboardClient({
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase mb-1">Project Type</label>
-                  <input name="projectType" defaultValue={editingPortfolio?.projectType || ''} placeholder="e.g. Social Media Marketing" required className="w-full border p-2 rounded" />
+                  <input name="projectType" defaultValue={editingPortfolio?.projectType || ''} placeholder="e.g. Next.js Web App, SMM Campaign" required className="w-full border p-2 rounded" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase mb-1">Duration</label>
@@ -612,7 +688,7 @@ export default function AdminDashboardClient({
               <div className="border p-4 rounded bg-slate-50 space-y-4">
                 <label className="block text-xs font-bold uppercase">Gallery Showcase Images</label>
                 <input type="file" name="galleryImageFiles" accept="image/*" multiple className="w-full text-xs" />
-                
+
                 {existingGallery.length > 0 && (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                     {existingGallery.map((url, i) => (

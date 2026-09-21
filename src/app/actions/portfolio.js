@@ -1,16 +1,39 @@
-// app/actions/portfolio.js
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { connectToDatabase } from '@/lib/mongoose'
-import { isAdminAuthenticated } from '@/app/actions/admin'
-import { uploadImage } from '@/lib/cloudinary'
+import connectToDatabase from '@/lib/mongoose'
 import Portfolio from '@/models/Portfolio'
+import { v2 as cloudinary } from 'cloudinary'
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+async function uploadToCloudinary(file, folder = 'portfolio') {
+  if (!file || typeof file === 'string' || file.size === 0) return null
+
+  const bytes = await file.arrayBuffer()
+  const buffer = Buffer.from(bytes)
+
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: 'auto' },
+      (error, result) => {
+        if (error) reject(error)
+        else resolve(result.secure_url)
+      }
+    )
+    uploadStream.end(buffer)
+  })
+}
 
 export async function getPortfolioItems() {
   try {
     await connectToDatabase()
-    const items = await Portfolio.find({}).sort({ createdAt: -1 }).lean()
+    const items = await Portfolio.find().sort({ createdAt: -1 }).lean()
     return JSON.parse(JSON.stringify(items))
   } catch (error) {
     console.error('Error fetching portfolio items:', error)
@@ -18,116 +41,151 @@ export async function getPortfolioItems() {
   }
 }
 
-export async function getPortfolioBySlug(slug) {
+export async function getPortfolioItemBySlug(slug) {
   try {
     await connectToDatabase()
-    const item = await Portfolio.findOne({ slug }).lean()
-    return item ? JSON.parse(JSON.stringify(item)) : null
+    const item = await Portfolio.findOne({ slug: slug.toLowerCase().trim() }).lean()
+    if (!item) return null
+    return JSON.parse(JSON.stringify(item))
   } catch (error) {
-    console.error('Error fetching case study:', error)
+    console.error('Error fetching portfolio item by slug:', error)
     return null
   }
 }
 
-export async function savePortfolioItem(formData) {
-  const isAuth = await isAdminAuthenticated()
-  if (!isAuth) return { success: false, error: 'Unauthorized action.' }
+// Export alias for backward compatibility
+export { getPortfolioItemBySlug as getPortfolioBySlug }
 
+export async function savePortfolioItem(formData) {
   try {
     await connectToDatabase()
 
     const id = formData.get('id')
-    const title = formData.get('title')
-    const client = formData.get('client')
-    const industry = formData.get('industry')
-    const projectType = formData.get('projectType')
-    const duration = formData.get('duration')
-    const background = formData.get('background')
-    
-    const objectives = formData.get('objectivesText')?.split('\n').filter(Boolean) || []
-    const results = formData.get('resultsText')?.split('\n').filter(Boolean) || []
-    const process = JSON.parse(formData.get('processJSON') || '[]')
+    const title = formData.get('title')?.trim()
+    const client = formData.get('client')?.trim()
+    const industry = formData.get('industry')?.trim()
+    const projectType = formData.get('projectType')?.trim()
+    const duration = formData.get('duration')?.trim()
+    const background = formData.get('background')?.trim()
+    const featured = formData.get('featured') === 'true'
 
-    // Handle Cover Image Upload
-    let coverImage = formData.get('existingCoverImage') || ''
-    const coverFile = formData.get('coverImageFile')
+    const category = (formData.get('category') || 'websites').toLowerCase().trim()
+    const websiteUrl = formData.get('websiteUrl')?.trim() || ''
 
-    if (coverFile && coverFile.size > 0) {
-      const arrayBuffer = await coverFile.arrayBuffer()
-      const buffer = Uint8Array.from(new Uint8Array(arrayBuffer))
-      coverImage = await uploadImage(buffer, 'portfolio_covers')
+    let slug = formData.get('slug')?.trim()
+    if (!slug && title) {
+      slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '')
     }
 
-    if (!coverImage) {
-      return { success: false, error: 'Cover image is required.' }
-    }
+    const objectivesText = formData.get('objectivesText') || ''
+    const objectives = objectivesText
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean)
 
-    // Handle Gallery Images Uploads
-    const galleryFiles = formData.getAll('galleryImageFiles')
-    const existingGallery = JSON.parse(formData.get('existingGalleryJSON') || '[]')
-    const newGalleryUrls = []
+    const resultsText = formData.get('resultsText') || ''
+    const results = resultsText
+      .split('\n')
+      .map((item) => item.trim())
+      .filter(Boolean)
 
-    for (const file of galleryFiles) {
-      if (file && file.size > 0) {
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Uint8Array.from(new Uint8Array(arrayBuffer))
-        const uploadedUrl = await uploadImage(buffer, 'portfolio_gallery')
-        newGalleryUrls.push(uploadedUrl)
+    const processJSON = formData.get('processJSON')
+    let process = []
+    if (processJSON) {
+      try {
+        process = JSON.parse(processJSON)
+      } catch (err) {
+        console.error('Failed to parse process JSON:', err)
       }
     }
 
-    const galleryImages = [...existingGallery, ...newGalleryUrls]
+    let coverImage = formData.get('existingCoverImage') || ''
+    const coverImageFile = formData.get('coverImageFile')
+    if (coverImageFile && coverImageFile.size > 0) {
+      const uploadedCover = await uploadToCloudinary(coverImageFile, 'portfolio/covers')
+      if (uploadedCover) {
+        coverImage = uploadedCover
+      }
+    }
 
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '')
+    const existingGalleryJSON = formData.get('existingGalleryJSON')
+    let galleryImages = []
+    if (existingGalleryJSON) {
+      try {
+        galleryImages = JSON.parse(existingGalleryJSON)
+      } catch (err) {
+        console.error('Failed to parse existing gallery JSON:', err)
+      }
+    }
+
+    const galleryImageFiles = formData.getAll('galleryImageFiles')
+    if (galleryImageFiles && galleryImageFiles.length > 0) {
+      for (const file of galleryImageFiles) {
+        if (file && file.size > 0) {
+          const uploadedGalleryImg = await uploadToCloudinary(file, 'portfolio/gallery')
+          if (uploadedGalleryImg) {
+            galleryImages.push(uploadedGalleryImg)
+          }
+        }
+      }
+    }
+
+    if (!title || !slug || !coverImage || !client || !industry || !projectType || !duration || !background) {
+      return { success: false, error: 'Please fill in all required fields.' }
+    }
 
     const payload = {
       title,
       slug,
+      category,
+      websiteUrl,
       client,
       industry,
       projectType,
       duration,
       background,
-      coverImage,
       objectives,
       process,
-      galleryImages,
       results,
+      coverImage,
+      galleryImages,
+      featured,
     }
 
     if (id) {
-      await Portfolio.findByIdAndUpdate(id, payload, { new: true }).lean()
+      await Portfolio.findByIdAndUpdate(id, payload, { new: true, runValidators: true })
     } else {
       await Portfolio.create(payload)
     }
 
     revalidatePath('/portfolio')
     revalidatePath(`/portfolio/${slug}`)
-    revalidatePath('/admin/portfolio')
-    
-    return { success: true, error: null }
+    revalidatePath('/admin')
+
+    return { success: true }
   } catch (error) {
-    console.error('Error saving case study:', error)
-    return { success: false, error: error?.message || 'Failed to save case study.' }
+    console.error('Error saving portfolio item:', error)
+    return { success: false, error: error.message || 'Failed to save portfolio item.' }
   }
 }
 
 export async function deletePortfolioItem(id) {
-  const isAuth = await isAdminAuthenticated()
-  if (!isAuth) return { success: false, error: 'Unauthorized action.' }
-
   try {
     await connectToDatabase()
-    await Portfolio.findByIdAndDelete(id)
+    const item = await Portfolio.findByIdAndDelete(id)
 
-    revalidatePath('/portfolio')
-    revalidatePath('/admin/portfolio')
-    return { success: true, error: null }
+    if (item) {
+      revalidatePath('/portfolio')
+      revalidatePath(`/portfolio/${item.slug}`)
+      revalidatePath('/admin')
+    }
+
+    return { success: true }
   } catch (error) {
     console.error('Error deleting portfolio item:', error)
-    return { success: false, error: 'Failed to delete portfolio item.' }
+    return { success: false, error: error.message || 'Failed to delete portfolio item.' }
   }
 }

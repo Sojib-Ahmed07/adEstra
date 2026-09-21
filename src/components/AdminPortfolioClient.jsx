@@ -1,4 +1,3 @@
-// components/AdminPortfolioClient.jsx
 'use client'
 
 import { useState } from 'react'
@@ -10,12 +9,16 @@ export default function AdminPortfolioClient({ initialItems }) {
   const [items, setItems] = useState(initialItems || [])
   const [editingItem, setEditingItem] = useState(null)
   const [loading, setLoading] = useState(false)
-  
+
   // Dynamic Form States
   const [existingCover, setExistingCover] = useState('')
   const [coverPreview, setCoverPreview] = useState('')
   const [existingGallery, setExistingGallery] = useState([])
   const [processSteps, setProcessSteps] = useState([{ title: '', pointsText: '' }])
+
+  // Category & Conditional Website Link States
+  const [selectedCategory, setSelectedCategory] = useState('websites')
+  const [customCategory, setCustomCategory] = useState('')
 
   function handleEdit(item) {
     setEditingItem(item)
@@ -28,6 +31,17 @@ export default function AdminPortfolioClient({ initialItems }) {
         pointsText: p.points?.join('\n') || '',
       })) || [{ title: '', pointsText: '' }]
     )
+
+    // Set category selection logic
+    const defaultCategories = ['websites', 'marketing', 'media-management', '3d-modeling']
+    const itemCat = (item.category || 'websites').toLowerCase()
+    if (defaultCategories.includes(itemCat)) {
+      setSelectedCategory(itemCat)
+      setCustomCategory('')
+    } else {
+      setSelectedCategory('custom')
+      setCustomCategory(item.category || '')
+    }
   }
 
   function resetForm() {
@@ -36,6 +50,8 @@ export default function AdminPortfolioClient({ initialItems }) {
     setCoverPreview('')
     setExistingGallery([])
     setProcessSteps([{ title: '', pointsText: '' }])
+    setSelectedCategory('websites')
+    setCustomCategory('')
   }
 
   function handleCoverChange(e) {
@@ -61,6 +77,10 @@ export default function AdminPortfolioClient({ initialItems }) {
 
     const form = e.target
     const formData = new FormData(form)
+
+    // Attach final category selection
+    const finalCategory = selectedCategory === 'custom' ? customCategory : selectedCategory
+    formData.set('category', finalCategory)
 
     // Append structured process JSON
     const formattedProcess = processSteps.map((step) => ({
@@ -103,6 +123,64 @@ export default function AdminPortfolioClient({ initialItems }) {
         {editingItem && <input type="hidden" name="id" value={editingItem._id} />}
         <input type="hidden" name="existingCoverImage" value={existingCover} />
 
+        {/* Dynamic Category Selector */}
+        <div className="p-4 border border-indigo-100 bg-indigo-50/50 rounded-lg space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                Portfolio Category
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full border border-slate-300 p-2 rounded bg-white font-medium text-slate-900"
+              >
+                <option value="websites">Websites</option>
+                <option value="marketing">Marketing</option>
+                <option value="media-management">Media Management</option>
+                <option value="3d-modeling">3D Modeling</option>
+                <option value="custom">+ Other / Custom Category</option>
+              </select>
+            </div>
+
+            {selectedCategory === 'custom' && (
+              <div>
+                <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                  Enter Custom Category Name
+                </label>
+                <input
+                  type="text"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  placeholder="e.g. Graphic Design, Motion Graphics"
+                  required
+                  className="w-full border border-slate-300 p-2 rounded bg-white text-slate-900"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Conditional Website URL Input */}
+          {selectedCategory === 'websites' && (
+            <div className="pt-2 border-t border-indigo-100">
+              <label className="block text-xs font-bold uppercase mb-1 text-indigo-900">
+                Website URL (Live Preview Link for Frame Showcase)
+              </label>
+              <input
+                type="url"
+                name="websiteUrl"
+                defaultValue={editingItem?.websiteUrl || ''}
+                placeholder="https://example.com"
+                required={selectedCategory === 'websites'}
+                className="w-full border border-indigo-200 p-2 rounded bg-white text-slate-900"
+              />
+              <p className="text-[11px] text-indigo-600 mt-1">
+                This URL will be rendered live inside an interactive tablet/laptop iframe frame for visitors.
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Core Metadata */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -119,7 +197,7 @@ export default function AdminPortfolioClient({ initialItems }) {
           </div>
           <div>
             <label className="block text-xs font-bold uppercase mb-1">Project Type</label>
-            <input name="projectType" defaultValue={editingItem?.projectType || ''} placeholder="e.g. Social Media Marketing" required className="w-full border p-2 rounded" />
+            <input name="projectType" defaultValue={editingItem?.projectType || ''} placeholder="e.g. Next.js Web App, SMM Campaign" required className="w-full border p-2 rounded" />
           </div>
           <div>
             <label className="block text-xs font-bold uppercase mb-1">Duration</label>
@@ -194,7 +272,7 @@ export default function AdminPortfolioClient({ initialItems }) {
         <div className="border p-4 rounded bg-slate-50 space-y-4">
           <label className="block text-xs font-bold uppercase">Gallery Showcase Images</label>
           <input type="file" name="galleryImageFiles" accept="image/*" multiple className="w-full text-xs" />
-          
+
           {existingGallery.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               {existingGallery.map((url, i) => (
@@ -235,7 +313,9 @@ export default function AdminPortfolioClient({ initialItems }) {
               <img src={item.coverImage} alt={item.title} className="w-16 h-12 object-cover rounded" />
               <div>
                 <h3 className="font-bold text-sm">{item.title}</h3>
-                <p className="text-xs text-slate-500">{item.client} • {item.industry}</p>
+                <p className="text-xs text-slate-500">
+                  {item.client} • Category: <span className="font-bold capitalize text-indigo-600">{item.category || 'websites'}</span>
+                </p>
               </div>
             </div>
             <div className="space-x-2">

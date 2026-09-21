@@ -1,19 +1,17 @@
-// app/portfolio/[slug]/page.jsx
-
-import { getPortfolioBySlug } from '@/app/actions/portfolio'
+import { getPortfolioItemBySlug } from '@/app/actions/portfolio'
 import { notFound } from 'next/navigation'
 import CaseStudyClient from './CaseStudyClient'
 
-export const revalidate = 60
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 export default async function CaseStudyPage({ params }) {
     const { slug } = await params
+    const item = await getPortfolioItemBySlug(slug)
 
-    const project = await getPortfolioBySlug(slug)
-
-    if (!project) {
+    if (!item) {
         notFound()
     }
 
-    return <CaseStudyClient project={project} />
+    return <CaseStudyClient project={item} item={item} />
 }
