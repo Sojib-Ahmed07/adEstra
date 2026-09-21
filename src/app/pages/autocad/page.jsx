@@ -3,104 +3,99 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-    Compass,
     Ruler,
-    Cog,
-    Building2,
-    Map,
-    CheckCircle2,
-    ArrowUpRight,
     Lightbulb,
     Sparkles,
-    Layers,
-    ShieldCheck,
-    Clock,
-    Maximize2
+    Video,
+    Image as ImageIcon,
+    Building2,
+    Film,
+    Boxes,
+    CheckCircle2,
+    ArrowUpRight
 } from 'lucide-react';
 
 // --- DATA ---
 
-const CAD_SERVICES = [
+const VISUALIZATION_SERVICES = [
     {
         id: '01',
-        icon: Compass,
-        title: 'Architectural Drafting',
-        description: 'From residential to commercial spaces — we deliver clean, compliant, and construction-ready drawings.',
+        icon: Video,
+        title: 'Animated Walkthrough & Flythrough Videos',
+        description: 'Cinematic interior and exterior property walkthrough videos that bring unbuilt spaces to life.',
         points: [
-            'Floor Plans & Elevations',
-            'Site Layouts',
-            'Building Sections',
-            'Reflected Ceiling Plans',
-            'Renovation & Remodel Drafting',
+            'Interior Walkthroughs',
+            'Exterior Flythroughs',
+            'Smooth Camera Motion',
+            'Realistic Lighting & Atmospheres',
         ],
-        footer: 'Precision architectural plans tailored for seamless construction.',
+        footer: 'Immersive property tours that make buyers feel like they are already there.',
     },
     {
         id: '02',
-        icon: Cog,
-        title: 'Mechanical & Engineering Drawings',
-        description: 'High-precision drafting for functional, fabrication-ready mechanical designs.',
+        icon: ImageIcon,
+        title: 'Photorealistic 3D Renders',
+        description: 'High-impact 3D imagery tailored for real estate listings, marketing brochures, and social media.',
         points: [
-            '2D Mechanical Components',
-            'Machine Part Diagrams',
-            'Technical Schematics',
-            'Assembly & Exploded Views',
+            'High-Resolution Still Renders',
+            'Brochure & Print Quality Visuals',
+            'Social Media Ready Content',
+            'Marketing-Focused Angles',
         ],
-        footer: 'Engineering accuracy engineered down to the exact millimeter.',
+        footer: 'Stunning visual assets designed to sell projects before they are built.',
     },
     {
         id: '03',
         icon: Building2,
-        title: 'Structural Drafting',
-        description: 'Detailed structural designs aligned with safety and building codes.',
+        title: 'Exterior & Interior Visualizations',
+        description: 'Comprehensive rendering for complete developments, individual units, and custom spaces.',
         points: [
-            'Foundation & Framing Plans',
-            'Reinforcement Detailing',
-            'Steel & Concrete Design',
-            'Cross Sections & Structural Notes',
-            'Coordination with Architectural Drawings',
+            'Buildings, Villas & Apartment Complexes',
+            'Entire Community Master Plans',
+            'Furnished, Staged & Beautifully Lit Interiors',
+            'True-to-Scale Materials & Textures',
         ],
-        footer: 'Building strong foundations with error-free technical detailing.',
+        footer: 'Polished interior and exterior spaces showcased at their absolute best.',
     },
     {
         id: '04',
-        icon: Map,
-        title: 'Survey & Land Mapping',
-        description: 'Accurate, scalable CAD drawings based on land survey inputs and GIS data.',
+        icon: Film,
+        title: '3D Modeling & Branded Video Production',
+        description: 'End-to-end service from raw CAD files to fully edited marketing videos.',
         points: [
-            'Plot Subdivisions',
-            'Land Development Maps',
-            'Utility Plans',
-            'Road Layouts',
+            '3D Models Built from AutoCAD & Sketches',
+            'Fully Edited Videos with Music & Transitions',
+            'Custom Branding & Logo Integration',
+            'Ready-to-Post Final Deliverables',
         ],
-        footer: 'Turning topographic survey data into actionable digital maps.',
+        footer: 'Turnkey visual marketing solutions ready for immediate campaign deployment.',
     },
 ];
 
 const WHY_CAD_POINTS = [
     {
-        title: 'Experienced Drafters & Designers',
-        description: 'Skilled professionals with real-world engineering and architectural knowledge.',
+        title: 'Civil Engineering Background',
+        description: '5+ years working on real infrastructure projects ensures true-to-scale, accurate 3D modeling.',
     },
     {
-        title: 'Precision & Compliance',
-        description: 'We follow international standards and local codes for every drawing.',
+        title: 'Revit, Twinmotion & 3ds Max Expertise',
+        description: 'Utilizing industry-standard tools to deliver photorealistic lighting, materials, and fluid animation.',
     },
     {
-        title: '2D & 3D Expertise',
-        description: 'From simple line diagrams to 3D layouts, we cater to every level of detail.',
+        title: 'Pre-Construction Sales Impact',
+        description: 'Help real estate developers, agents, and architects sell projects faster before breaking ground.',
     },
     {
-        title: 'Fast Turnaround',
-        description: 'Deadlines matter — we deliver reliably without compromising on quality.',
+        title: 'End-to-End Execution',
+        description: 'From raw floor plans and CAD files to fully edited, branded videos with custom audio and transitions.',
     },
     {
-        title: 'Custom Revisions & Scalability',
-        description: 'Need modifications or multiple drawing sets? We scale with your project demands.',
+        title: 'Scalable Solutions',
+        description: 'Whether marketing a single residential unit or an entire commercial development, we deliver consistent quality.',
     },
 ];
 
-// --- DELAYED & SLOWER ANIMATION VARIANTS ---
+// --- ANIMATION VARIANTS ---
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 50, scale: 0.96 },
@@ -145,7 +140,7 @@ export default function CADServicesPage() {
                     variants={staggerContainer}
                     className="space-y-12 relative z-10"
                 >
-                    {/* Floating Compass & CAD Drafting Visual Header */}
+                    {/* Header Visual */}
                     <div className="relative w-full max-w-2xl mx-auto h-44 flex items-center justify-center">
 
                         {/* Rotating Gear Icon */}
@@ -157,7 +152,7 @@ export default function CADServicesPage() {
                             }}
                             className="absolute -top-2 left-12 text-slate-300 opacity-80"
                         >
-                            <Cog className="w-16 h-16 stroke-[1]" />
+                            <Boxes className="w-16 h-16 stroke-[1]" />
                         </motion.div>
 
                         {/* Floating Lightbulb Icon */}
@@ -178,7 +173,7 @@ export default function CADServicesPage() {
                             <Sparkles className="w-8 h-8" />
                         </motion.div>
 
-                        {/* Main Interactive Hexagon Badge with Ruler Icon */}
+                        {/* Main Interactive Hexagon Badge */}
                         <motion.div
                             whileHover={{ scale: 1.12, rotate: 6 }}
                             whileTap={{ scale: 0.95 }}
@@ -199,10 +194,11 @@ export default function CADServicesPage() {
                         variants={fadeInUp}
                         className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-slate-950 tracking-tight leading-[1.08] max-w-5xl mx-auto"
                     >
-                        Precision-Driven Drafting for{' '}
+                        Photorealistic{' '}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-teal-700 to-slate-900">
-                            Modern Projects
-                        </span>
+                            3D Visualization
+                        </span>{' '}
+                        & Cinematic Walkthroughs
                     </motion.h1>
 
                     {/* Body Description */}
@@ -211,17 +207,18 @@ export default function CADServicesPage() {
                         className="max-w-3xl mx-auto space-y-6 text-slate-600 text-base sm:text-lg leading-relaxed text-left sm:text-center"
                     >
                         <p>
-                            At <strong className="text-slate-900 font-bold">adEstra</strong>, we transform concepts into{' '}
-                            <strong className="text-slate-900 font-bold">precise, scalable, and ready-to-build designs</strong> using the industry-standard tool: <strong className="text-slate-900 font-bold">AutoCAD</strong>.
+                            We help <strong className="text-slate-900 font-bold">real estate developers, agents, and architects</strong> sell projects before they're built — by turning 2D plans and CAD files into <strong className="text-slate-900 font-bold">photorealistic 3D visualizations and cinematic property walkthrough videos</strong>.
                         </p>
+
                         <p>
-                            Whether you’re an architect, engineer, contractor, interior designer, or real estate developer, our AutoCAD services bring your vision to life with clarity, technical accuracy, and detail-oriented execution.
+                            With a civil engineering background and 5+ years working on real infrastructure projects, we model accurately and true-to-scale using <strong className="text-slate-900 font-bold">Revit, Twinmotion, and 3ds Max</strong>. We bring spaces to life with realistic lighting, materials, and smooth camera motion.
                         </p>
+
                         <motion.p
                             whileHover={{ scale: 1.02 }}
                             className="font-bold text-slate-900 inline-block bg-teal-50 px-5 py-2.5 rounded-full border border-teal-200"
                         >
-                            We don’t just draw, we design solutions that save time, reduce errors, and speak the language of construction.
+                            Send us your plans and let's bring your project to life.
                         </motion.p>
                     </motion.div>
                 </motion.div>
@@ -241,10 +238,10 @@ export default function CADServicesPage() {
                         className="text-center space-y-4"
                     >
                         <h2 className="text-4xl sm:text-6xl font-extrabold text-slate-950 tracking-tight">
-                            What We Offer
+                            What We Create For You
                         </h2>
                         <p className="text-slate-500 text-sm sm:text-base max-w-lg mx-auto">
-                            End-to-end AutoCAD & drafting solutions tailored for engineering and architectural precision.
+                            High-impact 3D renders, video tours, and models tailored for pre-construction marketing.
                         </p>
                     </motion.div>
 
@@ -256,7 +253,7 @@ export default function CADServicesPage() {
                         variants={staggerContainer}
                         className="flex flex-wrap justify-center gap-8"
                     >
-                        {CAD_SERVICES.map((card) => {
+                        {VISUALIZATION_SERVICES.map((card) => {
                             const Icon = card.icon;
                             return (
                                 <motion.div
@@ -332,7 +329,7 @@ export default function CADServicesPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* SECTION 3: WHY CHOOSE ADESTRA FOR AUTOCAD SERVICES?      */}
+            {/* SECTION 3: WHY CHOOSE ADESTRA FOR 3D VISUALIZATION?      */}
             {/* ========================================================= */}
             <section className="w-full px-6 sm:px-12 lg:px-20 py-24 max-w-[1400px] mx-auto border-t border-slate-100">
                 <motion.div
@@ -345,11 +342,8 @@ export default function CADServicesPage() {
                     {/* Section Header */}
                     <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <h2 className="text-4xl sm:text-6xl font-extrabold text-slate-950 tracking-tight leading-tight">
-                            Why Choose adEstra for AutoCAD Services?
+                            Why Choose adEstra for 3D Visualization?
                         </h2>
-                        <div className="flex items-center gap-2 text-teal-600 font-bold text-sm bg-teal-50 px-4 py-2 rounded-full w-fit">
-                            <ShieldCheck className="w-4 h-4" /> International Standards & Accuracy
-                        </div>
                     </motion.div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -384,7 +378,7 @@ export default function CADServicesPage() {
                                     href="/contact"
                                     className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-slate-950 text-white font-bold text-sm hover:bg-teal-600 transition-all duration-300 shadow-md hover:shadow-xl"
                                 >
-                                    Start Your CAD Project Today
+                                    Bring Your Project to Life
                                     <ArrowUpRight className="w-4 h-4" />
                                 </a>
                             </motion.div>
@@ -399,16 +393,16 @@ export default function CADServicesPage() {
                         >
                             <img
                                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
-                                alt="adEstra AutoCAD Drafting Team"
+                                alt="adEstra 3D Visualization & Architectural Rendering Team"
                                 className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent opacity-90 transition-opacity duration-300 flex items-end p-8">
                                 <motion.div initial={{ y: 10 }} whileHover={{ y: 0 }}>
                                     <p className="text-white text-lg sm:text-xl font-bold tracking-tight">
-                                        The adEstra Engineering & CAD Team
+                                        The adEstra 3D Visualization Team
                                     </p>
                                     <p className="text-slate-300 text-xs sm:text-sm font-medium mt-1">
-                                        Delivering precision drafting, 3D modeling, and code-compliant designs.
+                                        Crafting photorealistic 3D renders, architectural flythroughs, and video tours using Revit, Twinmotion, and 3ds Max.
                                     </p>
                                 </motion.div>
                             </div>

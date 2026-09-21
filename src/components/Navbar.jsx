@@ -23,7 +23,7 @@ const SERVICES_MENU = [
     { label: 'Marketing', href: '/pages/marketing' },
     { label: 'SEO', href: '/pages/seo' },
     { label: 'Copywriting', href: '/pages/copywrite' },
-    { label: 'AutoCAD Design', href: '/pages/autocad' },
+    { label: '3D Visualization', href: '/pages/autocad' },
     { label: 'AI Training', href: '/pages/ai-training' },
 ];
 
@@ -33,7 +33,6 @@ const NAV_ITEMS = [
     { label: 'Team', href: '/team' },
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
-    { label: 'Pricing', href: '/pricing' },
 ];
 
 export default function Navbar() {
@@ -139,8 +138,8 @@ export default function Navbar() {
                     <div className="pointer-events-auto hidden lg:block mx-auto">
                         <nav
                             className={`flex h-[60px] items-center gap-1 rounded-full border px-4 transition-all duration-500 ease-out ${isLight
-                                    ? 'bg-white/95 border-black/10 shadow-[0_18px_50px_rgba(0,0,0,0.10)] backdrop-blur-2xl'
-                                    : 'bg-[#0a0c0b]/45 border-white/[0.09] shadow-[0_12px_40px_rgba(0,0,0,0.20)] backdrop-blur-[18px]'
+                                ? 'bg-white/95 border-black/10 shadow-[0_18px_50px_rgba(0,0,0,0.10)] backdrop-blur-2xl'
+                                : 'bg-[#0a0c0b]/45 border-white/[0.09] shadow-[0_12px_40px_rgba(0,0,0,0.20)] backdrop-blur-[18px]'
                                 }`}
                         >
                             <DesktopLink href="/pages/about" label="About" isLight={isLight} />
