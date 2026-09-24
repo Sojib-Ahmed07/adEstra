@@ -17,7 +17,7 @@ const BACKGROUND_VIDEO_URL =
 export default function HomePage() {
     return (
         <>
-            <div className="relative min-h-screen bg-[#a0b8c8] overflow-hidden">
+            <div className="relative min-h-fit lg:min-h-screen bg-[#a0b8c8] overflow-hidden">
 
                 {/* Background Video */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
