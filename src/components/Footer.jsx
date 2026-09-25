@@ -1,12 +1,30 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-const NAV_LINKS = ['Home', 'About Us', 'Contact Us', 'Services', 'Portfolio'];
-const SOCIALS = ['FB', 'IN', 'in', 'BE'];
+const NAV_LINKS = [
+    { label: 'Home', href: '/' },
+    { label: 'About Us', href: '/pages/about' },
+    { label: 'Contact Us', href: '/contact' },
+    { label: 'Portfolio', href: '/portfolio' }
+];
+
+const SOCIALS = [
+    { label: 'FB', href: 'https://www.facebook.com/adEstrasolutions' },
+    { label: 'IG', href: 'https://www.instagram.com/adestra_solutions' },
+    { label: 'IN', href: 'https://www.linkedin.com/company/adestra-solutions' }
+];
 
 export default function Footer() {
+    const handleHomeClick = (e) => {
+        if (window.location.pathname === '/') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     return (
         <footer className="w-full bg-[#18181a] text-white font-sans overflow-hidden border-t border-white/10">
 
@@ -15,15 +33,24 @@ export default function Footer() {
 
                 {/* Left Column - Brand Logo */}
                 <div className="lg:col-span-4 p-10 sm:p-14 flex items-center justify-center lg:justify-start">
-                    <div className="flex items-center gap-1 text-4xl sm:text-5xl font-black tracking-tight text-[#00f2a1]">
+                    <Link
+                        href="/"
+                        onClick={handleHomeClick}
+                        className="flex items-center gap-1 text-4xl sm:text-5xl font-black tracking-tight text-[#00f2a1]"
+                    >
                         <span>adEstra</span>
-                    </div>
+                    </Link>
                 </div>
 
                 {/* Middle Column - Animated Navigation */}
                 <div className="lg:col-span-4 p-10 sm:p-14 flex flex-col items-center justify-center space-y-4">
                     {NAV_LINKS.map((link, idx) => (
-                        <AnimatedNavLink key={idx} text={link} />
+                        <AnimatedNavLink
+                            key={idx}
+                            text={link.label}
+                            href={link.href}
+                            onClick={link.label === 'Home' ? handleHomeClick : undefined}
+                        />
                     ))}
                 </div>
 
@@ -55,12 +82,14 @@ export default function Footer() {
                             {SOCIALS.map((soc, idx) => (
                                 <motion.a
                                     key={idx}
-                                    href="#"
+                                    href={soc.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
                                     className="w-10 h-10 rounded-full border border-white/30 text-xs font-semibold flex items-center justify-center text-slate-200 hover:bg-white hover:text-black transition-colors duration-300"
                                 >
-                                    {soc}
+                                    {soc.label}
                                 </motion.a>
                             ))}
                         </div>
@@ -102,41 +131,42 @@ export default function Footer() {
 }
 
 {/* Middle Box Hover Text Component */ }
-function AnimatedNavLink({ text }) {
+function AnimatedNavLink({ text, href, onClick }) {
     return (
-        <motion.a
-            href="#"
+        <motion.div
             initial="rest"
             whileHover="hover"
             animate="rest"
             className="relative overflow-hidden block text-2xl sm:text-3xl font-bold tracking-tight cursor-pointer"
         >
-            <div className="relative flex flex-col">
-                {/* Main Text */}
-                <motion.span
-                    variants={{
-                        rest: { y: 0 },
-                        hover: { y: '-100%' },
-                    }}
-                    transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
-                    className="text-slate-200 block"
-                >
-                    {text}
-                </motion.span>
+            <Link href={href} onClick={onClick}>
+                <div className="relative flex flex-col">
+                    {/* Main Text */}
+                    <motion.span
+                        variants={{
+                            rest: { y: 0 },
+                            hover: { y: '-100%' },
+                        }}
+                        transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
+                        className="text-slate-200 block"
+                    >
+                        {text}
+                    </motion.span>
 
-                {/* Duplicate Sliding Text */}
-                <motion.span
-                    variants={{
-                        rest: { y: '100%' },
-                        hover: { y: 0 },
-                    }}
-                    transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
-                    className="absolute inset-0 text-[#00f2a1] block"
-                >
-                    {text}
-                </motion.span>
-            </div>
-        </motion.a>
+                    {/* Duplicate Sliding Text */}
+                    <motion.span
+                        variants={{
+                            rest: { y: '100%' },
+                            hover: { y: 0 },
+                        }}
+                        transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
+                        className="absolute inset-0 text-[#00f2a1] block"
+                    >
+                        {text}
+                    </motion.span>
+                </div>
+            </Link>
+        </motion.div>
     );
 }
 
