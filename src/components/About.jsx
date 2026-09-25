@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion, useInView, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
+import Link from 'next/link'; // 1. Imported Link component
 
 // High-Performance Zero-Jank Counter
 function CountingNumber({ value, suffix = '', duration = 1.2 }) {
@@ -48,13 +49,13 @@ export default function About() {
                     </div>
 
                     {/* Main Headline */}
-                    <motion.h2 
+                    <motion.h2
                         initial={{ opacity: 0, x: 140 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: '-50px' }}
-                        transition={{ 
+                        transition={{
                             duration: 1.8,
-                            ease: [0.16, 1, 0.3, 1] 
+                            ease: [0.16, 1, 0.3, 1]
                         }}
                         className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-black tracking-tight leading-[1.15] sm:leading-[1.1] text-slate-950 max-w-2xl"
                     >
@@ -132,10 +133,13 @@ export default function About() {
                         Our team is dedicated to crafting bespoke, thoughtful designs that not only reflect the individuality of your brand but also connect with your audience on a meaningful level.
                     </p>
 
+                    {/* 2. Wrapped button with Link */}
                     <div className="pt-2">
-                        <button className="w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-3 rounded-full border border-slate-900 text-slate-900 text-xs sm:text-sm font-semibold hover:bg-slate-900 hover:text-white transition-all duration-300 cursor-pointer shadow-xs">
-                            Learn More
-                        </button>
+                        <Link href="/pages/about" className="inline-block w-full sm:w-auto">
+                            <button className="w-full sm:w-auto px-6 py-2.5 sm:px-8 sm:py-3 rounded-full border border-slate-900 text-slate-900 text-xs sm:text-sm font-semibold hover:bg-slate-900 hover:text-white transition-all duration-300 cursor-pointer shadow-xs">
+                                Learn More
+                            </button>
+                        </Link>
                     </div>
 
                 </div>
