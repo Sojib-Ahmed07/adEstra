@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+
+const MotionLink = motion.create(Link);
 
 const TEAM = [
     {
@@ -115,8 +118,8 @@ export default function TeamSection() {
                             viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                         >
-                            <motion.a
-                                href="#"
+                            <MotionLink
+                                href="/team"
                                 whileHover="hover"
                                 whileTap={{ scale: 0.97 }}
                                 className="group inline-flex w-fit items-center gap-4 rounded-full border border-white/40 px-5 py-3 text-xs font-medium tracking-tight text-white transition-colors duration-300 hover:border-white hover:bg-white hover:text-black sm:px-6 sm:py-3.5"
@@ -130,7 +133,7 @@ export default function TeamSection() {
                                         <ArrowUpRight className="h-4 w-4" />
                                     </motion.span>
                                 </span>
-                            </motion.a>
+                            </MotionLink>
                         </motion.div>
                     </div>
 

@@ -360,7 +360,7 @@ export default function ServicesSection() {
                 </h2>
 
                 <Link
-                    href="/services"
+                    href="/portfolio"
                     className="
                         group
                         flex

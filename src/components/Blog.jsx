@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+
+const MotionLink = motion.create(Link);
 
 const BLOG_POSTS = [
     {
@@ -51,13 +54,13 @@ export default function BlogSection() {
                             </div>
 
                             {/* Main Headline - Ultra Slow Motion Right-to-Left Transition */}
-                            <motion.h2 
+                            <motion.h2
                                 initial={{ opacity: 0, x: 140 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true, margin: '-50px' }}
-                                transition={{ 
-                                    duration: 3.5, 
-                                    ease: [0.16, 1, 0.3, 1] 
+                                transition={{
+                                    duration: 3.5,
+                                    ease: [0.16, 1, 0.3, 1]
                                 }}
                                 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950"
                             >
@@ -65,13 +68,14 @@ export default function BlogSection() {
                             </motion.h2>
                         </div>
 
-                        <motion.button
+                        <MotionLink
+                            href="/blog"
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             className="px-8 py-3 rounded-full border border-slate-300 text-xs font-bold uppercase tracking-widest text-slate-900 hover:bg-slate-950 hover:text-white transition-all duration-300 cursor-pointer"
                         >
                             See All News
-                        </motion.button>
+                        </MotionLink>
                     </div>
 
                     <div className="w-full h-[1px] bg-slate-200" />
