@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const NAV_LINKS = [
@@ -16,6 +17,9 @@ const SOCIALS = [
     { label: 'IG', href: 'https://www.instagram.com/adestra_solutions' },
     { label: 'IN', href: 'https://www.linkedin.com/company/adestra-solutions' }
 ];
+
+const LOGO_URL =
+    'https://res.cloudinary.com/dlefye5fi/image/upload/v1790483884/adEstra-Icon_jie28t.png';
 
 function getCurrentYear() {
     return new Date().getFullYear();
@@ -40,9 +44,22 @@ export default function Footer() {
                     <Link
                         href="/"
                         onClick={handleHomeClick}
-                        className="flex items-center gap-1 text-4xl sm:text-5xl font-black tracking-tight text-[#00f2a1]"
+                        className="flex items-center gap-1"
                     >
-                        <span>adEstra</span>
+                        {/* 👇 Logo image — MOBILE ONLY */}
+                        <Image
+                            src={LOGO_URL}
+                            alt="adEstra"
+                            width={160}
+                            height={160}
+                            priority
+                            className="block lg:hidden w-28 h-auto object-contain"
+                        />
+
+                        {/* 👇 Text — HIDDEN on mobile, shown from lg up */}
+                        <span className="hidden lg:inline text-4xl sm:text-5xl font-black tracking-tight text-[#00f2a1]">
+                            adEstra
+                        </span>
                     </Link>
                 </div>
 

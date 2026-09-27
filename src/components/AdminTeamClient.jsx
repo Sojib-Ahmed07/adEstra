@@ -64,7 +64,7 @@ export default function AdminTeamClient({ initialMembers }) {
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Manage Team Members</h1>
           <p className="text-xs text-slate-500">
-            Add, edit, or remove staff members with Cloudinary storage
+            Add, edit, or remove staff members with detailed profiles
           </p>
         </div>
 
@@ -128,8 +128,8 @@ export default function AdminTeamClient({ initialMembers }) {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white max-w-lg w-full p-6 border border-slate-200 space-y-6">
+        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white max-w-lg w-full p-6 border border-slate-200 space-y-6 max-h-[90vh] overflow-y-auto my-auto">
             <h2 className="text-xl font-bold text-slate-900">
               {editingMember ? 'Edit Team Member' : 'Add Team Member'}
             </h2>
@@ -173,7 +173,62 @@ export default function AdminTeamClient({ initialMembers }) {
                 />
               </div>
 
-              {/* Cloudinary File Input */}
+              <div>
+                <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                  Email Address
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="john@example.com"
+                  defaultValue={editingMember?.email || ''}
+                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                  Years of Experience / Tagline
+                </label>
+
+                <input
+                  type="text"
+                  name="experience"
+                  placeholder="5+ Years Experience"
+                  defaultValue={editingMember?.experience || ''}
+                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                  Skills (Comma-separated)
+                </label>
+
+                <input
+                  type="text"
+                  name="skills"
+                  placeholder="UI Design, React, Node.js, Leadership"
+                  defaultValue={editingMember?.skills ? editingMember.skills.join(', ') : ''}
+                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
+                  Bio / Detailed Description
+                </label>
+
+                <textarea
+                  name="bio"
+                  rows={4}
+                  placeholder="Write a short biography..."
+                  defaultValue={editingMember?.bio || ''}
+                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-500"
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-bold uppercase mb-1 text-slate-700">
                   Member Image

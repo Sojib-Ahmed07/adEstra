@@ -28,6 +28,14 @@ export async function saveTeamMember(formData) {
     const id = formData.get('id')
     const name = formData.get('name')
     const role = formData.get('role')
+    const bio = formData.get('bio') || ''
+    const email = formData.get('email') || ''
+    const experience = formData.get('experience') || ''
+    const rawSkills = formData.get('skills') || ''
+    const skills = rawSkills
+      ? rawSkills.split(',').map((s) => s.trim()).filter(Boolean)
+      : []
+
     const facebook = formData.get('facebook') || '#'
     const twitter = formData.get('twitter') || '#'
     const instagram = formData.get('instagram') || '#'
@@ -35,12 +43,9 @@ export async function saveTeamMember(formData) {
 
     let imageUrl = formData.get('existingImage') || ''
 
-    // Edge-compatible image upload buffer conversion
     if (imageFile && imageFile.size > 0) {
       const arrayBuffer = await imageFile.arrayBuffer()
-      // Use Uint8Array instead of Node's global Buffer for Edge runtime compatibility
       const buffer = Uint8Array.from(new Uint8Array(arrayBuffer))
-
       imageUrl = await uploadImage(buffer, 'team_members')
     }
 
@@ -52,6 +57,10 @@ export async function saveTeamMember(formData) {
       name,
       role,
       image: imageUrl,
+      bio,
+      email,
+      experience,
+      skills,
       socials: { facebook, twitter, instagram },
     }
 
@@ -61,11 +70,9 @@ export async function saveTeamMember(formData) {
       await TeamMember.create(memberData)
     }
 
-    // Revalidate paths
     revalidatePath('/team')
     revalidatePath('/admin/team')
 
-    // Always return a explicit, plain JSON object
     return { success: true, error: null }
   } catch (error) {
     console.error('Error saving team member:', error?.message || error)

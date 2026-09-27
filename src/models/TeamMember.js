@@ -6,6 +6,10 @@ const TeamMemberSchema = new mongoose.Schema(
     name: { type: String, required: true },
     role: { type: String, required: true },
     image: { type: String, required: true },
+    bio: { type: String, default: '' },
+    email: { type: String, default: '' },
+    experience: { type: String, default: '' },
+    skills: { type: [String], default: [] },
     socials: {
       facebook: { type: String, default: '#' },
       twitter: { type: String, default: '#' },

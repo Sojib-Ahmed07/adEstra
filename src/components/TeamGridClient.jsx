@@ -1,11 +1,14 @@
 // components/TeamGridClient.jsx
 'use client'
 
-import { motion } from 'framer-motion'
-import { FiArrowUpRight } from 'react-icons/fi'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiArrowUpRight, FiX, FiMail } from 'react-icons/fi'
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa6'
 
 export default function TeamGridClient({ initialMembers }) {
+  const [selectedMember, setSelectedMember] = useState(null)
+
   if (!initialMembers || initialMembers.length === 0) {
     return (
       <div className="pt-20 lg:pt-24 max-w-7xl mx-auto px-6 lg:px-12 pb-20">
@@ -38,7 +41,8 @@ export default function TeamGridClient({ initialMembers }) {
               delay: index * 0.15,
               ease: [0.25, 0.1, 0.25, 1],
             }}
-            className="group relative flex flex-col"
+            onClick={() => setSelectedMember(member)}
+            className="group relative flex flex-col cursor-pointer"
           >
             {/* Image Container */}
             <div className="relative aspect-[4/5] w-full bg-[#52C876] overflow-hidden rounded-md flex items-end justify-center">
@@ -49,8 +53,11 @@ export default function TeamGridClient({ initialMembers }) {
               />
 
               {/* Floating Social Icons */}
-              <div className="absolute left-5 top-1/2 -translate-y-1/2 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-10">
-                {member.socials?.facebook && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute left-5 top-1/2 -translate-y-1/2 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-10"
+              >
+                {member.socials?.facebook && member.socials.facebook !== '#' && (
                   <a
                     href={member.socials.facebook}
                     aria-label="Facebook"
@@ -61,7 +68,7 @@ export default function TeamGridClient({ initialMembers }) {
                     <FaFacebookF className="w-4 h-4" />
                   </a>
                 )}
-                {member.socials?.twitter && (
+                {member.socials?.twitter && member.socials.twitter !== '#' && (
                   <a
                     href={member.socials.twitter}
                     aria-label="Twitter"
@@ -72,7 +79,7 @@ export default function TeamGridClient({ initialMembers }) {
                     <FaTwitter className="w-4 h-4" />
                   </a>
                 )}
-                {member.socials?.instagram && (
+                {member.socials?.instagram && member.socials.instagram !== '#' && (
                   <a
                     href={member.socials.instagram}
                     aria-label="Instagram"
@@ -108,6 +115,134 @@ export default function TeamGridClient({ initialMembers }) {
           </motion.div>
         ))}
       </div>
+
+      {/* Member Details Modal */}
+      <AnimatePresence>
+        {selectedMember && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedMember(null)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col md:flex-row"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedMember(null)}
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/10 hover:bg-black text-black hover:text-white flex items-center justify-center transition-colors duration-300"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+
+              {/* Modal Image */}
+              <div className="w-full md:w-1/2 aspect-[4/5] bg-gray-100 shrink-0">
+                <img
+                  src={selectedMember.image}
+                  alt={selectedMember.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 md:p-8 flex flex-col justify-between overflow-y-auto w-full">
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#52C876]">
+                      {selectedMember.experience || 'Team Member'}
+                    </span>
+                    <h3 className="text-3xl font-bold text-gray-900 mt-1">
+                      {selectedMember.name}
+                    </h3>
+                    <p className="text-base text-gray-500 font-medium">
+                      {selectedMember.role}
+                    </p>
+                  </div>
+
+                  {selectedMember.bio && (
+                    <p className="text-gray-600 leading-relaxed text-sm pt-3 border-t border-gray-100">
+                      {selectedMember.bio}
+                    </p>
+                  )}
+
+                  {selectedMember.skills && selectedMember.skills.length > 0 && (
+                    <div className="pt-2">
+                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                        Specializations
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedMember.skills.map((skill, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-6 mt-6 border-t border-gray-100 space-y-4">
+                  {selectedMember.email && (
+                    <a
+                      href={`mailto:${selectedMember.email}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-[#52C876] transition-colors"
+                    >
+                      <FiMail className="w-4 h-4" />
+                      {selectedMember.email}
+                    </a>
+                  )}
+
+                  <div className="flex items-center gap-3">
+                    {selectedMember.socials?.facebook && selectedMember.socials.facebook !== '#' && (
+                      <a
+                        href={selectedMember.socials.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
+                      >
+                        <FaFacebookF className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                    {selectedMember.socials?.twitter && selectedMember.socials.twitter !== '#' && (
+                      <a
+                        href={selectedMember.socials.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
+                      >
+                        <FaTwitter className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                    {selectedMember.socials?.instagram && selectedMember.socials.instagram !== '#' && (
+                      <a
+                        href={selectedMember.socials.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
+                      >
+                        <FaInstagram className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
