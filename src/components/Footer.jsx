@@ -17,6 +17,10 @@ const SOCIALS = [
     { label: 'IN', href: 'https://www.linkedin.com/company/adestra-solutions' }
 ];
 
+function getCurrentYear() {
+    return new Date().getFullYear();
+}
+
 export default function Footer() {
     const handleHomeClick = (e) => {
         if (window.location.pathname === '/') {
@@ -119,8 +123,8 @@ export default function Footer() {
 
             {/* Bottom Bar */}
             <div className="px-8 py-5 text-xs text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#121214]">
-                <p>© 2024 adEstra ™ All rights reserved.</p>
-                <p>Design & Developed by adEsrta</p>
+                <p>© {getCurrentYear()} adEstra ™ All rights reserved.</p>
+                <p>Design & Developed by adEstra</p>
                 <a href="#" className="hover:text-white transition-colors">
                     Terms & Conditions
                 </a>

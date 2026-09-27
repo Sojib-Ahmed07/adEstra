@@ -13,42 +13,42 @@ const TEAM = [
         name: 'Mh Ador',
         role: 'Operation Lead',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788057674/team_members/jrxoy5rm3h4vusr8ciqp.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
     {
         id: 2,
         name: 'Said Sajal',
         role: 'Business Developer',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235837/sajal-bg.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
     {
         id: 3,
         name: 'Muntasir Islam',
         role: 'Accounts & Quickbook Manager',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/muntasir-bg.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
     {
         id: 4,
         name: 'Apon Yeager',
         role: 'Motion Designer',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235837/Untitled-design-1.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
     {
         id: 5,
         name: 'Mansura Mim',
         role: 'Graphic Designer',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/mim-bg.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
     {
         id: 6,
         name: 'Palash Bhuiyan',
         role: 'SEO Wizard',
         image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/polash-bg.png',
-        socials: { linkedin: '#', twitter: '#' },
+        socials: { linkedin: '#' },
     },
 ];
 
@@ -189,18 +189,6 @@ function MemberCard({ member, index }) {
                     >
                         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                             <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14Zm-8.5 7H7.7v8.5h2.8V10Zm-1.4-4.25A1.65 1.65 0 1 0 9.1 9.05 1.65 1.65 0 0 0 9.1 5.75ZM19 13.6c0-2.56-1.37-3.75-3.2-3.75-1.48 0-2.15.82-2.52 1.4V10h-2.8v8.5h2.8v-4.7c0-1.24.23-2.44 1.77-2.44 1.52 0 1.54 1.42 1.54 2.52v4.62H19V13.6Z" />
-                        </svg>
-                    </motion.a>
-
-                    <motion.a
-                        href={member.socials.twitter}
-                        aria-label={`${member.name} X`}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-black/80 text-white backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-black sm:h-9 sm:w-9"
-                    >
-                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z" />
                         </svg>
                     </motion.a>
                 </div>

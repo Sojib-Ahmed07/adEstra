@@ -117,18 +117,18 @@ export default function AboutPage() {
                             Since 2019, become the #1 low-code agency in the world
                         </motion.h1>
 
-                        {/* Outlined Stats Box */}
-                        <motion.div variants={fadeInUp} className="flex items-center gap-10 sm:gap-16 pt-4">
-                            <div className="space-y-2">
+                        {/* Outlined Stats Box - FIXED ALIGNMENT */}
+                        <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-start sm:items-center gap-8 sm:gap-12 pt-4">
+                            <div className="flex flex-col space-y-1">
                                 <span className="text-6xl sm:text-7xl lg:text-8xl font-light text-slate-900 tracking-tight font-mono">
                                     750+
                                 </span>
                                 <p className="text-sm font-semibold text-slate-600">Completed Projects</p>
                             </div>
 
-                            <div className="h-24 w-[1px] bg-slate-200" />
+                            <div className="hidden sm:block h-24 w-[1px] bg-slate-200" />
 
-                            <div className="space-y-2">
+                            <div className="flex flex-col space-y-1">
                                 <span className="text-6xl sm:text-7xl lg:text-8xl font-light text-slate-900 tracking-tight font-mono">
                                     600+
                                 </span>
@@ -139,11 +139,11 @@ export default function AboutPage() {
 
                     {/* Right Column */}
                     <div className="lg:col-span-5 space-y-8 lg:pt-14">
-                        <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl lg:text-4xl font-medium text-[#22e3ad] leading-snug">
+                        <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl lg:text-4xl font-medium text-[#22e3ad] leading-snug text-justify">
                             We are a dynamic design studio driven by a deep passion for creativity and innovation.
                         </motion.h2>
 
-                        <motion.p variants={fadeInUp} className="text-sm sm:text-base text-slate-500 leading-relaxed font-normal">
+                        <motion.p variants={fadeInUp} className="text-sm sm:text-base text-slate-500 leading-relaxed font-normal text-justify">
                             Our team is dedicated to crafting bespoke, thoughtful designs that not only reflect the individuality of your brand but also connect with your audience on a meaningful level.
                         </motion.p>
 
@@ -178,7 +178,7 @@ export default function AboutPage() {
                     </motion.div>
 
                     {/* Story Paragraphs */}
-                    <motion.div variants={fadeInUp} className="lg:col-span-6 space-y-6 text-slate-800 text-base sm:text-lg leading-relaxed font-normal">
+                    <motion.div variants={fadeInUp} className="lg:col-span-6 space-y-6 text-slate-800 text-base sm:text-lg leading-relaxed font-normal text-justify">
                         <p>
                             we believe great brands are built with passion, purpose, and precision. What started as a small team of freelancers with a shared love for digital creativity has now grown into a full-service digital marketing agency serving businesses across Australia and beyond. From humble beginnings—working late nights, chasing deadlines, and building websites from coffee shops—we’ve transformed into a dedicated powerhouse of marketers, designers, developers, and problem-solvers.
                         </p>
@@ -202,7 +202,7 @@ export default function AboutPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* SECTION 3: OUR UNIQUE SERVICES (FULL-WIDTH MASSIVE TEXT) */}
+            {/* SECTION 3: OUR UNIQUE SERVICES (REVISED HIERARCHY)        */}
             {/* ========================================================= */}
             <section className="w-full px-6 sm:px-12 lg:px-16 py-24 border-b border-slate-100">
                 <motion.div
@@ -212,13 +212,13 @@ export default function AboutPage() {
                     variants={staggerContainer}
                     className="space-y-16"
                 >
-                    {/* Header */}
+                    {/* Header - Made Large */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                         <div className="space-y-3">
                             <span className="px-4 py-1.5 rounded-full border border-slate-300 text-xs font-bold tracking-wider text-slate-800 uppercase">
                                 ( OUR SERVICES )
                             </span>
-                            <h2 className="text-4xl sm:text-6xl font-black text-slate-950 tracking-tight">
+                            <h2 className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-black text-slate-950 tracking-tight">
                                 Our Unique Services
                             </h2>
                         </div>
@@ -231,27 +231,27 @@ export default function AboutPage() {
                         </a>
                     </div>
 
-                    {/* Massive Full-Width Services List */}
+                    {/* Service Items - Made Smaller */}
                     <div className="divide-y divide-slate-200 border-t border-b border-slate-200 w-full">
                         {SERVICES_LIST.map((service) => (
                             <motion.div
                                 key={service.id}
                                 variants={fadeInUp}
-                                className="py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center group cursor-pointer hover:bg-slate-50 transition-colors px-2 sm:px-6 -mx-2 sm:-mx-6 rounded-2xl"
+                                className="py-10 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center group cursor-pointer hover:bg-slate-50 transition-colors px-2 sm:px-6 -mx-2 sm:-mx-6 rounded-2xl"
                             >
-                                {/* Number + Giant Service Title */}
-                                <div className="lg:col-span-8 flex items-baseline gap-4 sm:gap-10">
-                                    <span className="text-lg sm:text-2xl font-mono font-bold text-slate-400 group-hover:text-slate-900 transition-colors shrink-0">
+                                {/* Number + Service Title - Reduced Size */}
+                                <div className="lg:col-span-7 flex items-baseline gap-4 sm:gap-6">
+                                    <span className="text-lg sm:text-xl font-mono font-bold text-slate-400 group-hover:text-slate-900 transition-colors shrink-0">
                                         {service.id}/
                                     </span>
-                                    <h3 className="text-5xl sm:text-7xl lg:text-8xl xl:text-9xl font-extrabold text-slate-950 tracking-tight leading-none uppercase group-hover:translate-x-3 transition-transform duration-300">
+                                    <h3 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-slate-950 tracking-tight leading-none uppercase group-hover:translate-x-2 transition-transform duration-300">
                                         {service.title}
                                     </h3>
                                 </div>
 
-                                {/* Right Description Column */}
-                                <div className="lg:col-span-4 lg:pl-6">
-                                    <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+                                {/* Right Description Column - Justified */}
+                                <div className="lg:col-span-5 lg:pl-6">
+                                    <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed text-justify">
                                         {service.description}
                                     </p>
                                 </div>
@@ -307,7 +307,8 @@ export default function AboutPage() {
                                             onClick={() => toggleFaq(index)}
                                             className="w-full flex justify-between items-center text-left gap-6 group cursor-pointer"
                                         >
-                                            <span className="text-lg sm:text-2xl font-bold text-slate-900 group-hover:text-slate-600 transition-colors">
+                                            {/* FAQ Question - Removed Bold */}
+                                            <span className="text-lg sm:text-xl font-normal text-slate-800 group-hover:text-slate-500 transition-colors">
                                                 {faq.question}
                                             </span>
                                             <div className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center shrink-0 group-hover:border-slate-900 transition-colors">
@@ -328,7 +329,7 @@ export default function AboutPage() {
                                                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                                                     className="overflow-hidden"
                                                 >
-                                                    <p className="pt-4 text-slate-600 text-sm sm:text-base leading-relaxed pr-12">
+                                                    <p className="pt-4 text-slate-600 text-sm sm:text-base leading-relaxed pr-12 text-justify">
                                                         {faq.answer}
                                                     </p>
                                                 </motion.div>

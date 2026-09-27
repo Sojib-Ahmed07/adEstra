@@ -20,7 +20,10 @@ export default function HomePage() {
             <div className="relative min-h-fit lg:min-h-screen bg-[#a0b8c8] overflow-hidden">
 
                 {/* Background Video */}
-                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div
+                    className="absolute inset-0 z-0 pointer-events-none"
+                    style={{ overflow: 'clip' }}
+                >
 
                     <video
                         autoPlay

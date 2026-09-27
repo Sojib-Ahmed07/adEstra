@@ -26,7 +26,7 @@ body {
 }
 
 /* --- LENIS SMOOTH SCROLL OVERRIDES --- */
-html.lenis, 
+html.lenis,
 html.lenis body {
   height: auto;
   width: 100%;
@@ -53,7 +53,67 @@ html {
   overscroll-behavior: none;
 }
 
+/* =========================================================
+   HORIZONTAL SCROLL FIX — LEVEL 1 (GLOBAL)
+   ========================================================= */
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-y: none;
+  position: relative;
+  width: 100%;
+}
+
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+
+/* =========================================================
+   HORIZONTAL SCROLL FIX — LEVEL 2 (SECTION-LEVEL CLIP)
+   ---------------------------------------------------------
+   Clip at the section level. Every marquee, ticker, or
+   video wrapper lives inside a <section>, a <footer>, or
+   a direct child of <main>, so clipping those containers
+   catches all of them.
+
+   `overflow-x: clip` does NOT create a scroll container,
+   so position:sticky, GSAP ScrollTrigger, and Framer
+   Motion useScroll keep working exactly as designed.
+
+   `overflow-y: visible` is only valid next to `clip`
+   (not `hidden`) and lets sticky children still stick.
+   ========================================================= */
+
+main>*,
+section,
+footer {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.absolute.inset-0 {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+video,
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+/* =========================================================
+   SAFARI < 16 FALLBACK
+   ========================================================= */
+@supports not (overflow: clip) {
+
+  body,
+  main>*,
+  section,
+  footer,
+  .absolute.inset-0 {
+    overflow-x: hidden;
+  }
 }
