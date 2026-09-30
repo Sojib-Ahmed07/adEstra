@@ -12,15 +12,6 @@ import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const SERVICES_MENU = [
-    { label: 'Designs', href: '/pages/design' },
-    { label: 'Marketing', href: '/pages/marketing' },
-    { label: 'SEO', href: '/pages/seo' },
-    { label: 'Copywriting', href: '/pages/copywrite' },
-    { label: '3D Visualization', href: '/pages/autocad' },
-    { label: 'AI Training', href: '/pages/ai-training' },
-];
-
 const NAV_ITEMS = [
     { label: 'About', href: '/pages/about' },
     { label: 'Portfolio', href: '/portfolio' },
@@ -31,10 +22,15 @@ const NAV_ITEMS = [
 
 const WHATSAPP_URL = 'https://wa.me/8801685655696';
 
-export default function Navbar() {
+export default function Navbar({ services = [] }) {
     const pathname = usePathname();
     const isHomePage = pathname === '/' || pathname === '';
     const isAdminPage = pathname.startsWith('/admin');
+
+    const SERVICES_MENU = services.map((service) => ({
+        label: service.title,
+        href: `/services/${service.slug}`,
+    }));
 
     const containerRef = useRef(null);
     const logoRef = useRef(null);
@@ -187,27 +183,35 @@ export default function Navbar() {
                                                 </div>
 
                                                 <div className="space-y-0.5">
-                                                    {SERVICES_MENU.map((item, index) => (
-                                                        <motion.div
-                                                            key={item.href}
-                                                            initial={{ opacity: 0, y: 5 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            transition={{ delay: index * 0.035, duration: 0.25 }}
-                                                        >
-                                                            <Link
-                                                                href={item.href}
-                                                                className="group flex items-center justify-between rounded-[15px] px-4 py-3 transition-all duration-300 hover:bg-white/[0.06]"
+                                                    {SERVICES_MENU.length === 0 ? (
+                                                        <p className="px-4 py-3 text-[11px] font-medium text-white/40">
+                                                            No services yet
+                                                        </p>
+                                                    ) : (
+                                                        SERVICES_MENU.map((item, index) => (
+                                                            <motion.div
+                                                                key={item.href}
+                                                                initial={{ opacity: 0, y: 5 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ delay: index * 0.035, duration: 0.25 }}
                                                             >
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="text-[9px] tabular-nums text-white/20">0{index + 1}</span>
-                                                                    <span className="text-[12px] font-medium text-white/55 transition-colors duration-300 group-hover:text-white">
-                                                                        {item.label}
-                                                                    </span>
-                                                                </div>
-                                                                <ArrowUpRight className="h-3.5 w-3.5 -translate-x-1 translate-y-1 text-white/0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-white/60" />
-                                                            </Link>
-                                                        </motion.div>
-                                                    ))}
+                                                                <Link
+                                                                    href={item.href}
+                                                                    className="group flex items-center justify-between rounded-[15px] px-4 py-3 transition-all duration-300 hover:bg-white/[0.06]"
+                                                                >
+                                                                    <div className="flex items-center gap-3">
+                                                                        <span className="text-[9px] tabular-nums text-white/20">
+                                                                            {String(index + 1).padStart(2, '0')}
+                                                                        </span>
+                                                                        <span className="text-[12px] font-medium text-white/55 transition-colors duration-300 group-hover:text-white">
+                                                                            {item.label}
+                                                                        </span>
+                                                                    </div>
+                                                                    <ArrowUpRight className="h-3.5 w-3.5 -translate-x-1 translate-y-1 text-white/0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-white/60" />
+                                                                </Link>
+                                                            </motion.div>
+                                                        ))
+                                                    )}
                                                 </div>
                                             </div>
                                         </motion.div>
@@ -309,20 +313,28 @@ export default function Navbar() {
                                                 className="overflow-hidden"
                                             >
                                                 <div className="mb-1 ml-3 border-l border-black/10 pl-2">
-                                                    {SERVICES_MENU.map((item, index) => (
-                                                        <Link
-                                                            key={item.href}
-                                                            href={item.href}
-                                                            onClick={closeMobileMenu}
-                                                            className="flex items-center justify-between rounded-[12px] px-3 py-2.5 transition-colors duration-300 hover:bg-black/[0.04]"
-                                                        >
-                                                            <div className="flex items-center gap-3">
-                                                                <span className="text-[9px] tabular-nums text-black/25">0{index + 1}</span>
-                                                                <span className="text-[12px] font-medium text-black/60">{item.label}</span>
-                                                            </div>
-                                                            <ArrowUpRight className="h-3.5 w-3.5 text-black/25" />
-                                                        </Link>
-                                                    ))}
+                                                    {SERVICES_MENU.length === 0 ? (
+                                                        <p className="px-3 py-2.5 text-[11px] font-medium text-black/40">
+                                                            No services yet
+                                                        </p>
+                                                    ) : (
+                                                        SERVICES_MENU.map((item, index) => (
+                                                            <Link
+                                                                key={item.href}
+                                                                href={item.href}
+                                                                onClick={closeMobileMenu}
+                                                                className="flex items-center justify-between rounded-[12px] px-3 py-2.5 transition-colors duration-300 hover:bg-black/[0.04]"
+                                                            >
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-[9px] tabular-nums text-black/25">
+                                                                        {String(index + 1).padStart(2, '0')}
+                                                                    </span>
+                                                                    <span className="text-[12px] font-medium text-black/60">{item.label}</span>
+                                                                </div>
+                                                                <ArrowUpRight className="h-3.5 w-3.5 text-black/25" />
+                                                            </Link>
+                                                        ))
+                                                    )}
                                                 </div>
                                             </motion.div>
                                         )}

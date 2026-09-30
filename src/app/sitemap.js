@@ -3,8 +3,9 @@ import { connectToDatabase } from '@/lib/mongoose'
 import Post from '@/models/Post'
 import Category from '@/models/Category'
 import Portfolio from '@/models/Portfolio'
+import Service from '@/models/Service'
 
-// Build the sitemap on each request so new posts/projects appear automatically
+// Build the sitemap on each request so new posts/projects/services appear automatically
 export const dynamic = 'force-dynamic'
 
 const BASE = 'https://www.adestrasolutions.com'
@@ -12,17 +13,11 @@ const BASE = 'https://www.adestrasolutions.com'
 // Fixed pages: [path, priority, changeFrequency]
 const STATIC_PAGES = [
     ['', 1.0, 'weekly'],
-    // Services
-    ['/pages/design', 0.9, 'monthly'],
-    ['/pages/marketing', 0.9, 'monthly'],
-    ['/pages/seo', 0.9, 'monthly'],
-    ['/pages/copywrite', 0.9, 'monthly'],
-    ['/pages/autocad', 0.9, 'monthly'],
-    ['/pages/ai-training', 0.9, 'monthly'],
     // Company
     ['/pages/about', 0.8, 'monthly'],
     ['/pricing', 0.8, 'monthly'],
     ['/portfolio', 0.8, 'weekly'],
+    ['/services', 0.9, 'weekly'],
     ['/team', 0.7, 'monthly'],
     ['/blog', 0.8, 'weekly'],
     ['/contact', 0.7, 'yearly'],
@@ -42,10 +37,11 @@ export default async function sitemap() {
     try {
         await connectToDatabase()
 
-        const [posts, categories, projects] = await Promise.all([
+        const [posts, categories, projects, services] = await Promise.all([
             Post.find({}, 'slug updatedAt').lean(),
             Category.find({}, 'slug updatedAt').lean(),
             Portfolio.find({}, 'slug updatedAt').lean(),
+            Service.find({ published: true }, 'slug updatedAt').lean(),
         ])
 
         const postEntries = posts.map((p) => ({
@@ -69,7 +65,20 @@ export default async function sitemap() {
             priority: 0.7,
         }))
 
-        return [...staticEntries, ...postEntries, ...categoryEntries, ...projectEntries]
+        const serviceEntries = services.map((s) => ({
+            url: `${BASE}/services/${s.slug}`,
+            lastModified: s.updatedAt || now,
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        }))
+
+        return [
+            ...staticEntries,
+            ...postEntries,
+            ...categoryEntries,
+            ...projectEntries,
+            ...serviceEntries,
+        ]
     } catch (err) {
         console.error('Sitemap: database fetch failed', err)
         return staticEntries

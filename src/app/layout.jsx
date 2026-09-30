@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import { getPublishedServices } from "@/app/actions/services";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -16,7 +17,9 @@ export const metadata = {
         "From Concept to Creation — Beautiful design, web development, marketing, and AI services.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+    const services = await getPublishedServices();
+
     return (
         <html lang="en">
             <body
@@ -27,7 +30,7 @@ export default function RootLayout({ children }) {
                     <div className="relative z-10 flex flex-col min-h-screen w-full">
 
                         {/* Global Navbar */}
-                        <Navbar />
+                        <Navbar services={services} />
 
                         {/* Main Content */}
                         <main className="flex-grow w-full">

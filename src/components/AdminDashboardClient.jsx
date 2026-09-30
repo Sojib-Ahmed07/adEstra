@@ -274,7 +274,7 @@ export default function AdminDashboardClient({
             Admin Control Center
           </h1>
           <p className="text-xs text-slate-500">
-            Manage blog posts, portfolio case studies, and team members
+            Manage blog posts, portfolio case studies, services, and team members
           </p>
         </div>
 
@@ -294,6 +294,13 @@ export default function AdminDashboardClient({
               + Add Case Study
             </button>
           )}
+
+          <Link
+            href="/admin/services"
+            className="bg-teal-700 text-white px-5 py-2.5 rounded-md text-xs font-semibold uppercase tracking-wider hover:bg-teal-800 transition-colors"
+          >
+            Manage Services
+          </Link>
 
           <Link
             href="/admin/team"
@@ -316,8 +323,8 @@ export default function AdminDashboardClient({
         <button
           onClick={() => setActiveTab('posts')}
           className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'posts'
-              ? 'bg-slate-900 text-white'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            ? 'bg-slate-900 text-white'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
         >
           Blog Posts
@@ -326,12 +333,19 @@ export default function AdminDashboardClient({
         <button
           onClick={() => setActiveTab('portfolio')}
           className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'portfolio'
-              ? 'bg-slate-900 text-white'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            ? 'bg-slate-900 text-white'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
         >
           Portfolio / Case Studies
         </button>
+
+        <Link
+          href="/admin/services"
+          className="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
+        >
+          Services
+        </Link>
 
         <Link
           href="/admin/team"
