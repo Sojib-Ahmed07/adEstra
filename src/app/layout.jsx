@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import ChatWidget from "@/components/ChatWidget";
 import { getPublishedServices } from "@/app/actions/services";
 
 const poppins = Poppins({
@@ -39,6 +40,9 @@ export default async function RootLayout({ children }) {
 
                         {/* Footer */}
                         <Footer />
+
+                        {/* Global AI Chat Widget (hidden on /admin*) */}
+                        <ChatWidget />
 
                     </div>
 

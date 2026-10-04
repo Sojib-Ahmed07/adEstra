@@ -20,12 +20,9 @@ const NAV_ITEMS = [
     { label: 'Contact', href: '/contact' },
 ];
 
-const WHATSAPP_URL = 'https://wa.me/8801685655696';
-
 export default function Navbar({ services = [] }) {
     const pathname = usePathname();
     const isHomePage = pathname === '/' || pathname === '';
-    const isAdminPage = pathname.startsWith('/admin');
 
     const SERVICES_MENU = services.map((service) => ({
         label: service.title,
@@ -365,8 +362,6 @@ export default function Navbar({ services = [] }) {
                     )}
                 </AnimatePresence>
             </div>
-
-            {!isAdminPage && <FloatingWhatsApp />}
         </>
     );
 }
@@ -395,40 +390,5 @@ function MobileLink({ href, label, onClick }) {
             <span>{label}</span>
             <ArrowUpRight className="h-4 w-4 text-black/20" />
         </Link>
-    );
-}
-
-function FloatingWhatsApp() {
-    return (
-        <motion.a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Chat with us on WhatsApp"
-            initial={{ opacity: 0, scale: 0.7, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.92 }}
-            className="fixed bottom-5 right-5 z-[99998] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_10px_35px_rgba(37,211,102,0.32)] transition-shadow duration-300 hover:shadow-[0_14px_45px_rgba(37,211,102,0.45)] sm:bottom-6 sm:right-6 sm:h-[58px] sm:w-[58px]"
-        >
-            <svg
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-[29px] w-[29px] sm:h-[30px] sm:w-[30px]"
-                aria-hidden="true"
-            >
-                <path
-                    d="M16.002 3C8.823 3 3 8.823 3 16.002c0 2.294.594 4.45 1.635 6.32L3 29l6.85-1.597a12.94 12.94 0 0 0 6.152 1.557h.006C23.177 28.96 29 23.181 29 16.002 29 8.823 23.177 3 16.002 3Z"
-                    fill="white"
-                />
-                <path
-                    d="M22.96 19.078c-.38-.19-2.24-1.105-2.587-1.23-.347-.127-.6-.19-.853.19-.253.38-.98 1.23-1.2 1.482-.22.254-.44.285-.82.095-.38-.19-1.604-.591-3.056-1.886-1.13-1.008-1.893-2.254-2.114-2.634-.22-.38-.023-.585.167-.774.17-.17.38-.443.57-.664.19-.22.253-.38.38-.633.126-.253.063-.475-.032-.664-.095-.19-.853-2.055-1.168-2.814-.308-.738-.622-.638-.853-.65-.22-.011-.475-.013-.728-.013-.253 0-.664.095-1.012.475-.347.38-1.328 1.298-1.328 3.163 0 1.865 1.36 3.666 1.55 3.919.19.253 2.676 4.086 6.482 5.73.906.392 1.613.625 2.164.8.91.29 1.739.249 2.394.151.73-.109 2.24-.916 2.555-1.8.316-.885.316-1.643.221-1.8-.095-.158-.348-.253-.728-.443Z"
-                    fill="#25D366"
-                />
-            </svg>
-            <span className="pointer-events-none absolute inset-0 rounded-full bg-white/20 opacity-0 transition-opacity duration-300 hover:opacity-100" />
-        </motion.a>
     );
 }
