@@ -1,3 +1,4 @@
+// components/ChatWidget.jsx
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -28,21 +29,26 @@ export default function ChatWidget() {
 
     const scrollRef = useRef(null)
     const inputRef = useRef(null)
+    const sessionPromiseRef = useRef(null)
 
-    // Ensure a signed session cookie exists (cheap; only runs once per mount)
-    useEffect(() => {
-        if (isAdminPage) return
-        let cancelled = false
-        fetch('/api/chat/session', { method: 'GET', credentials: 'same-origin' })
-            .catch(() => {
-                if (!cancelled) {
-                    // Non-fatal: /api/chat will reject if no cookie, and widget shows error.
-                }
+    // Get a signed session cookie — only when the visitor actually opens the chat
+    // (not on every page view). The same request is reused if called again.
+    function ensureSession(force = false) {
+        if (force || !sessionPromiseRef.current) {
+            sessionPromiseRef.current = fetch('/api/chat/session', {
+                method: 'GET',
+                credentials: 'same-origin',
             })
-        return () => {
-            cancelled = true
+                .then((res) => res.ok)
+                .catch(() => false)
         }
-    }, [isAdminPage])
+        return sessionPromiseRef.current
+    }
+
+    useEffect(() => {
+        if (open && !isAdminPage) ensureSession()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open, isAdminPage])
 
     // Auto scroll to bottom on new messages
     useEffect(() => {
@@ -69,13 +75,23 @@ export default function ChatWidget() {
         setShowChips(false)
         setLoading(true)
 
-        try {
-            const res = await fetch('/api/chat', {
+        const postChat = () =>
+            fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'same-origin',
                 body: JSON.stringify({ messages: nextMessages }),
             })
+
+        try {
+            await ensureSession()
+            let res = await postChat()
+
+            // Session missing or expired → get a fresh one and retry once
+            if (res.status === 401) {
+                await ensureSession(true)
+                res = await postChat()
+            }
 
             const data = await res.json().catch(() => ({}))
             let reply = data?.reply
@@ -293,8 +309,8 @@ function MessageBubble({ role, content }) {
         >
             <div
                 className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${isUser
-                        ? 'rounded-br-md bg-slate-950 text-white'
-                        : 'rounded-bl-md border border-slate-200 bg-white text-slate-800'
+                    ? 'rounded-br-md bg-slate-950 text-white'
+                    : 'rounded-bl-md border border-slate-200 bg-white text-slate-800'
                     }`}
             >
                 {isUser ? content : renderMessageContent(content)}

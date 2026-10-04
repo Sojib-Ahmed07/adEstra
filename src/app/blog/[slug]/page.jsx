@@ -3,10 +3,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { connectToDatabase } from '@/lib/mongoose'
 import { sanitizeHtml } from '@/lib/sanitizeHtml'
+import { createFormToken } from '@/lib/formToken'
 import Post from '@/models/Post'
 import Category from '@/models/Category' // Ensures schema registration for populate
 import CommentSection from '@/components/CommentSection'
 import { getCommentsForPost } from '@/app/actions/comments'
+
+// Rendered per request (fresh comments + fresh anti-spam token)
+export const dynamic = 'force-dynamic'
 
 export default async function SinglePostPage({ params }) {
   // Await params for Next.js 15+ compatibility
@@ -100,6 +104,7 @@ export default async function SinglePostPage({ params }) {
           postId={post._id}
           postSlug={post.slug}
           initialComments={comments}
+          formToken={createFormToken()}
         />
 
       </article>

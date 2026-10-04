@@ -4,15 +4,17 @@
 import { useState, useRef } from 'react'
 import { addComment } from '@/app/actions/comments'
 
-export default function CommentSection({ postId, postSlug, initialComments }) {
+export default function CommentSection({ postId, postSlug, initialComments, formToken }) {
   const [comments, setComments] = useState(initialComments || [])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false)
   const formRef = useRef(null)
 
   async function handleSubmit(formData) {
     setIsSubmitting(true)
     setMessage('')
+    setIsError(false)
 
     const name = formData.get('name')
     const content = formData.get('content')
@@ -20,6 +22,7 @@ export default function CommentSection({ postId, postSlug, initialComments }) {
     const res = await addComment(formData)
 
     if (res?.error) {
+      setIsError(true)
       setMessage(res.error)
     } else {
       // Create an optimistic comment object for immediate display
@@ -55,6 +58,16 @@ export default function CommentSection({ postId, postSlug, initialComments }) {
 
         <input type="hidden" name="postId" value={postId} />
         <input type="hidden" name="postSlug" value={postSlug} />
+        <input type="hidden" name="formToken" value={formToken || ''} />
+
+        {/* Spam trap: hidden from people (and screen readers), bots fill it in */}
+        <div
+          aria-hidden="true"
+          style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}
+        >
+          <label htmlFor="website">Website</label>
+          <input id="website" type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
@@ -62,13 +75,15 @@ export default function CommentSection({ postId, postSlug, initialComments }) {
             name="name"
             placeholder="Your Name *"
             required
+            maxLength={80}
             className="w-full px-4 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:border-black bg-white text-gray-900"
           />
           <input
             type="email"
             name="email"
-            placeholder="Your Email *"
+            placeholder="Your Email * (never shown publicly)"
             required
+            maxLength={120}
             className="w-full px-4 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:border-black bg-white text-gray-900"
           />
         </div>
@@ -78,11 +93,14 @@ export default function CommentSection({ postId, postSlug, initialComments }) {
           rows="4"
           placeholder="Write your comment here..."
           required
+          maxLength={2000}
           className="w-full px-4 py-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:border-black bg-white text-gray-900"
         />
 
         {message && (
-          <p className="text-xs font-semibold text-green-600">{message}</p>
+          <p className={`text-xs font-semibold ${isError ? 'text-red-600' : 'text-green-600'}`}>
+            {message}
+          </p>
         )}
 
         <button
@@ -110,7 +128,7 @@ export default function CommentSection({ postId, postSlug, initialComments }) {
                   {new Date(comment.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">
+              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
                 {comment.content}
               </p>
             </div>

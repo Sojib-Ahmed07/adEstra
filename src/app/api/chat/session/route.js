@@ -1,37 +1,45 @@
 // app/api/chat/session/route.js
+// Issues the signed chat session cookie. Rate-limited per visitor so bots
+// can't mint unlimited sessions.
 import { NextResponse } from 'next/server'
-import crypto from 'crypto'
+import { getClientIp, hitRateLimit } from '@/lib/rateLimit'
+import {
+    CHAT_SESSION_COOKIE,
+    CHAT_SESSION_SECONDS,
+    createChatSession,
+} from '@/lib/chatSession'
 
-const SESSION_COOKIE = 'adestra_chat_sid'
-const MAX_AGE_SECONDS = 60 * 60 * 24
-
-function getSecret() {
-    return (
-        process.env.CHAT_SESSION_SECRET ||
-        process.env.ADMIN_PASSWORD ||
-        'adestra-dev-fallback-secret'
-    )
-}
-
-function signSessionId(id) {
-    return crypto
-        .createHmac('sha256', getSecret())
-        .update(id)
-        .digest('hex')
-}
+const SESSIONS_PER_IP_PER_HOUR = 20
 
 export async function GET() {
-    const id = crypto.randomBytes(16).toString('hex')
-    const sig = signSessionId(id)
-    const value = `${id}.${sig}`
+    try {
+        const limit = await hitRateLimit({
+            name: 'chat-session',
+            identifier: await getClientIp(),
+            limit: SESSIONS_PER_IP_PER_HOUR,
+            windowMs: 60 * 60 * 1000,
+        })
+        if (!limit.allowed) {
+            return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 })
+        }
+    } catch (err) {
+        console.error('[chat-session] rate limiter unavailable:', err)
+        return NextResponse.json({ ok: false, error: 'unavailable' }, { status: 503 })
+    }
+
+    const value = createChatSession()
+    if (!value) {
+        console.error('[chat-session] CHAT_SESSION_SECRET is not set — chat is disabled.')
+        return NextResponse.json({ ok: false, error: 'not_configured' }, { status: 503 })
+    }
 
     const res = NextResponse.json({ ok: true })
-    res.cookies.set(SESSION_COOKIE, value, {
+    res.cookies.set(CHAT_SESSION_COOKIE, value, {
         httpOnly: true,
         sameSite: 'strict',
         secure: process.env.NODE_ENV === 'production',
         path: '/',
-        maxAge: MAX_AGE_SECONDS,
+        maxAge: CHAT_SESSION_SECONDS,
     })
     return res
 }
