@@ -1,19 +1,38 @@
+// app/actions/comments.js
 'use server'
 
+import mongoose from 'mongoose'
 import { revalidatePath } from 'next/cache'
 import { connectToDatabase } from '@/lib/mongoose'
 import Comment from '@/models/Comment'
 
-// 1. Action to add a comment
+const MAX_NAME = 80
+const MAX_EMAIL = 120
+const MAX_CONTENT = 2000
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// 1. Add a comment (public)
 export async function addComment(formData) {
-  const postId = formData.get('postId')
-  const postSlug = formData.get('postSlug')
-  const name = formData.get('name')
-  const email = formData.get('email')
-  const content = formData.get('content')
+  const postId = String(formData.get('postId') || '')
+  const postSlug = String(formData.get('postSlug') || '')
+  const name = String(formData.get('name') || '').trim()
+  const email = String(formData.get('email') || '').trim()
+  const content = String(formData.get('content') || '').trim()
 
   if (!postId || !name || !email || !content) {
     return { error: 'All fields are required.' }
+  }
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    return { error: 'Invalid post.' }
+  }
+  if (!EMAIL_RE.test(email) || email.length > MAX_EMAIL) {
+    return { error: 'Please enter a valid email address.' }
+  }
+  if (name.length > MAX_NAME) {
+    return { error: `Name must be under ${MAX_NAME} characters.` }
+  }
+  if (content.length > MAX_CONTENT) {
+    return { error: `Comment must be under ${MAX_CONTENT} characters.` }
   }
 
   try {
@@ -21,13 +40,12 @@ export async function addComment(formData) {
 
     await Comment.create({
       post: postId,
-      author: name, // Passes author for schema validation
       name,
       email,
       content,
     })
 
-    revalidatePath(`/blog/${postSlug}`)
+    if (postSlug) revalidatePath(`/blog/${postSlug}`)
     return { success: true }
   } catch (error) {
     console.error('Error adding comment:', error)
@@ -35,11 +53,13 @@ export async function addComment(formData) {
   }
 }
 
-// 2. Action/function to fetch comments for a post
+// 2. Fetch comments for a post (public)
+// Only safe fields are returned — commenters' emails are NEVER sent to the browser.
 export async function getCommentsForPost(postId) {
   try {
     await connectToDatabase()
     const comments = await Comment.find({ post: postId })
+      .select('_id name content createdAt')
       .sort({ createdAt: -1 })
       .lean()
 

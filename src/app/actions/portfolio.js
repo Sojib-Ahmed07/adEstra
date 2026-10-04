@@ -1,8 +1,10 @@
+// app/actions/portfolio.js
 'use server'
 
 import { revalidatePath } from 'next/cache'
 import connectToDatabase from '@/lib/mongoose'
 import Portfolio from '@/models/Portfolio'
+import { isAdminAuthenticated } from '@/app/actions/admin'
 import { v2 as cloudinary } from 'cloudinary'
 
 // Configure Cloudinary
@@ -30,6 +32,10 @@ async function uploadToCloudinary(file, folder = 'portfolio') {
   })
 }
 
+/* =========================================================
+   PUBLIC READS
+   ========================================================= */
+
 export async function getPortfolioItems() {
   try {
     await connectToDatabase()
@@ -44,7 +50,7 @@ export async function getPortfolioItems() {
 export async function getPortfolioItemBySlug(slug) {
   try {
     await connectToDatabase()
-    const item = await Portfolio.findOne({ slug: slug.toLowerCase().trim() }).lean()
+    const item = await Portfolio.findOne({ slug: String(slug || '').toLowerCase().trim() }).lean()
     if (!item) return null
     return JSON.parse(JSON.stringify(item))
   } catch (error) {
@@ -56,7 +62,14 @@ export async function getPortfolioItemBySlug(slug) {
 // Export alias for backward compatibility
 export { getPortfolioItemBySlug as getPortfolioBySlug }
 
+/* =========================================================
+   ADMIN MUTATIONS (login required)
+   ========================================================= */
+
 export async function savePortfolioItem(formData) {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) return { success: false, error: 'Unauthorized action.' }
+
   try {
     await connectToDatabase()
 
@@ -72,7 +85,7 @@ export async function savePortfolioItem(formData) {
     const category = (formData.get('category') || 'websites').toLowerCase().trim()
     const websiteUrl = formData.get('websiteUrl')?.trim() || ''
 
-    let slug = formData.get('slug')?.trim()
+    let slug = formData.get('slug')?.trim().toLowerCase()
     if (!slug && title) {
       slug = title
         .toLowerCase()
@@ -164,6 +177,7 @@ export async function savePortfolioItem(formData) {
     revalidatePath('/portfolio')
     revalidatePath(`/portfolio/${slug}`)
     revalidatePath('/admin')
+    revalidatePath('/admin/portfolio')
 
     return { success: true }
   } catch (error) {
@@ -173,6 +187,9 @@ export async function savePortfolioItem(formData) {
 }
 
 export async function deletePortfolioItem(id) {
+  const isAuth = await isAdminAuthenticated()
+  if (!isAuth) return { success: false, error: 'Unauthorized action.' }
+
   try {
     await connectToDatabase()
     const item = await Portfolio.findByIdAndDelete(id)
@@ -181,6 +198,7 @@ export async function deletePortfolioItem(id) {
       revalidatePath('/portfolio')
       revalidatePath(`/portfolio/${item.slug}`)
       revalidatePath('/admin')
+      revalidatePath('/admin/portfolio')
     }
 
     return { success: true }

@@ -2,13 +2,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { connectToDatabase } from '@/lib/mongoose'
+import { sanitizeHtml } from '@/lib/sanitizeHtml'
 import Post from '@/models/Post'
 import Category from '@/models/Category' // Ensures schema registration for populate
 import CommentSection from '@/components/CommentSection'
 import { getCommentsForPost } from '@/app/actions/comments'
 
 export default async function SinglePostPage({ params }) {
-  // Await params for Next.js 15 compatibility
+  // Await params for Next.js 15+ compatibility
   const resolvedParams = await params
   const slug = resolvedParams?.slug
 
@@ -28,13 +29,16 @@ export default async function SinglePostPage({ params }) {
   // Serialize MongoDB document for Client/Server component boundary
   const post = JSON.parse(JSON.stringify(postDoc))
 
-  // Fetch comments specifically for this post
+  // Clean the HTML again at render time (protects older posts saved before sanitizing existed)
+  const safeContent = sanitizeHtml(post.content)
+
+  // Fetch comments specifically for this post (no emails included)
   const comments = await getCommentsForPost(post._id)
 
   return (
     <main className="w-full min-h-screen bg-white text-gray-900 font-sans py-16 px-6 lg:px-12">
       <article className="max-w-4xl mx-auto space-y-8">
-        
+
         {/* Back Link */}
         <Link
           href="/blog"
@@ -74,7 +78,7 @@ export default async function SinglePostPage({ params }) {
         {/* Content Body */}
         <div
           className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-4"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: safeContent }}
         />
 
         {/* Tags */}
