@@ -13,7 +13,8 @@
 
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { buildChatbotContext } from '@/app/actions/chatbot'
+import { STATIC_CONTEXT } from '@/lib/chatbotContext'
+import { buildSiteKnowledge } from '@/lib/siteKnowledge'
 import { getClientIp, hitRateLimit } from '@/lib/rateLimit'
 import { CHAT_SESSION_COOKIE, validateChatSession } from '@/lib/chatSession'
 import {
@@ -249,7 +250,14 @@ export async function POST(req) {
         }
 
         /* ---- Build context + call providers ---- */
-        const contextBlock = await buildChatbotContext()
+        // Last few user turns decide which items get full details
+        // (so follow-ups like "tell me more about that one" still match)
+        const query = messages
+            .filter((m) => m.role === 'user')
+            .slice(-3)
+            .map((m) => m.content)
+            .join(' ')
+        const contextBlock = STATIC_CONTEXT + (await buildSiteKnowledge(query))
         const systemPrompt = buildSystemPrompt(contextBlock)
 
         let reply = ''

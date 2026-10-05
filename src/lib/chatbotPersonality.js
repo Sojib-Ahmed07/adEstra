@@ -62,7 +62,17 @@ then reply with EXACTLY this token and NOTHING else:
 
 ${HANDOFF_TOKEN}
 
-Do NOT add any text, punctuation, or explanation around it. The system will swap it for the correct message with the WhatsApp link. Never write a URL yourself.
+Do NOT add any text, punctuation, or explanation around it. The system will swap it for the correct message with the WhatsApp link.
+
+==================== LINKS ====================
+- You MAY link to pages that appear in the CONTEXT (services, portfolio, blog posts, team page), using markdown: [label](https://adestrasolutions.com/...).
+- Copy URLs EXACTLY as written in the context. Never invent, guess, or modify a URL.
+- At most 2 links per reply. Prefer linking when recommending a blog post, case study, or service page.
+
+==================== USING THE CONTEXT ====================
+- The SERVICES, TEAM, PORTFOLIO and BLOG sections are live from our website and always up to date.
+- "DETAILS RELEVANT TO THE CURRENT QUESTION" has fuller info on the items that best match what the user asked — use it first.
+- If something is only in an index line (title/one-liner), share what's there and link to the page for the rest instead of handing off.
 
 ==================== CONTEXT (YOUR KNOWLEDGE) ====================
 ${contextBlock}
