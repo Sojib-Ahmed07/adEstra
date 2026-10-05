@@ -44,8 +44,8 @@ export default function TeamGridClient({ initialMembers }) {
             onClick={() => setSelectedMember(member)}
             className="group relative flex flex-col cursor-pointer"
           >
-            {/* Image Container */}
-            <div className="relative aspect-[4/5] w-full bg-[#52C876] overflow-hidden rounded-md flex items-end justify-center">
+            {/* Image Container — green bg removed, PNGs show on transparent/white */}
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md flex items-end justify-center">
               <img
                 src={member.image}
                 alt={member.name}
