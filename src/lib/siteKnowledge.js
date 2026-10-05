@@ -33,7 +33,7 @@ const LIMITS = {
     DETAILED_PORTFOLIO: 2,
     DETAILED_SERVICES: 2,
     POST_BODY_CHARS: 1200,
-    MAX_CONTEXT_CHARS: 14000, // hard cap on the dynamic block (~3.5k tokens)
+    MAX_CONTEXT_CHARS: 9000, // default cap on the dynamic block (~2.3k tokens)
 }
 
 /* =========================================================
@@ -251,8 +251,10 @@ function postDetail(p) {
 
 /**
  * @param {string} query  recent user text, used to pick which items get full details
+ * @param {{ maxChars?: number }} [opts]  smaller cap for providers with tight token limits (Groq)
  */
-export async function buildSiteKnowledge(query = '') {
+export async function buildSiteKnowledge(query = '', opts = {}) {
+    const maxChars = opts.maxChars || LIMITS.MAX_CONTEXT_CHARS
     let data
     try {
         data = await loadSiteData()
@@ -304,8 +306,8 @@ export async function buildSiteKnowledge(query = '') {
     }
 
     let block = sections.join('\n\n')
-    if (block.length > LIMITS.MAX_CONTEXT_CHARS) {
-        block = block.slice(0, LIMITS.MAX_CONTEXT_CHARS) + '\n…(truncated)'
+    if (block.length > maxChars) {
+        block = block.slice(0, maxChars) + '\n…(truncated)'
     }
     return block ? `\n\n${block}\n` : ''
 }

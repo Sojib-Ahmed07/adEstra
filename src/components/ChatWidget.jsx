@@ -95,6 +95,8 @@ export default function ChatWidget() {
 
             const data = await res.json().catch(() => ({}))
             let reply = data?.reply
+            // Shows why a reply failed (DevTools → Console). No secrets, just a short code.
+            if (data?.reason) console.warn('[Ade] chat failed:', res.status, data.reason)
 
             if (res.status === 429) {
                 reply = data?.reply || LIMITED_MESSAGE
