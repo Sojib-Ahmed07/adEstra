@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowUpRight, FiX, FiMail } from 'react-icons/fi'
-import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa6'
+import { FaFacebookF, FaLinkedinIn, FaInstagram } from 'react-icons/fa6'
 
 export default function TeamGridClient({ initialMembers }) {
   const [selectedMember, setSelectedMember] = useState(null)
@@ -68,15 +68,15 @@ export default function TeamGridClient({ initialMembers }) {
                     <FaFacebookF className="w-4 h-4" />
                   </a>
                 )}
-                {member.socials?.twitter && member.socials.twitter !== '#' && (
+                {member.socials?.linkedin && member.socials.linkedin !== '#' && (
                   <a
-                    href={member.socials.twitter}
-                    aria-label="Twitter"
+                    href={member.socials.linkedin}
+                    aria-label="LinkedIn"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 border border-black rounded-full flex items-center justify-center text-black bg-white/20 backdrop-blur-sm hover:bg-black hover:text-white transition-all duration-300"
                   >
-                    <FaTwitter className="w-4 h-4" />
+                    <FaLinkedinIn className="w-4 h-4" />
                   </a>
                 )}
                 {member.socials?.instagram && member.socials.instagram !== '#' && (
@@ -216,14 +216,14 @@ export default function TeamGridClient({ initialMembers }) {
                         <FaFacebookF className="w-3.5 h-3.5" />
                       </a>
                     )}
-                    {selectedMember.socials?.twitter && selectedMember.socials.twitter !== '#' && (
+                    {selectedMember.socials?.linkedin && selectedMember.socials.linkedin !== '#' && (
                       <a
-                        href={selectedMember.socials.twitter}
+                        href={selectedMember.socials.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
                       >
-                        <FaTwitter className="w-3.5 h-3.5" />
+                        <FaLinkedinIn className="w-3.5 h-3.5" />
                       </a>
                     )}
                     {selectedMember.socials?.instagram && selectedMember.socials.instagram !== '#' && (
