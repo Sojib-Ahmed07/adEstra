@@ -259,30 +259,18 @@ export default function AdminTeamClient({ initialMembers }) {
 
               <div className="space-y-2">
                 <label className="block text-xs font-bold uppercase text-slate-700">
-                  Social Links
+                  LinkedIn
                 </label>
 
                 <input
-                  type="text"
-                  name="facebook"
-                  placeholder="Facebook URL"
-                  defaultValue={editingMember?.socials?.facebook || ''}
-                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-500 text-xs"
-                />
-
-                <input
-                  type="text"
-                  name="twitter"
-                  placeholder="Twitter URL"
-                  defaultValue={editingMember?.socials?.twitter || ''}
-                  className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-500 text-xs"
-                />
-
-                <input
-                  type="text"
-                  name="instagram"
-                  placeholder="Instagram URL"
-                  defaultValue={editingMember?.socials?.instagram || ''}
+                  type="url"
+                  name="linkedin"
+                  placeholder="LinkedIn profile URL (https://linkedin.com/in/...)"
+                  defaultValue={
+                    editingMember?.socials?.linkedin && editingMember.socials.linkedin !== '#'
+                      ? editingMember.socials.linkedin
+                      : ''
+                  }
                   className="w-full px-4 py-2 border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-500 text-xs"
                 />
               </div>

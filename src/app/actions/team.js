@@ -36,9 +36,7 @@ export async function saveTeamMember(formData) {
       ? rawSkills.split(',').map((s) => s.trim()).filter(Boolean)
       : []
 
-    const facebook = formData.get('facebook') || '#'
-    const twitter = formData.get('twitter') || '#'
-    const instagram = formData.get('instagram') || '#'
+    const linkedin = (formData.get('linkedin') || '').trim() || '#'
     const imageFile = formData.get('imageFile')
 
     let imageUrl = formData.get('existingImage') || ''
@@ -61,7 +59,7 @@ export async function saveTeamMember(formData) {
       email,
       experience,
       skills,
-      socials: { facebook, twitter, instagram },
+      socials: { linkedin },
     }
 
     if (id) {

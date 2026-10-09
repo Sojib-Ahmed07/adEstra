@@ -4,7 +4,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowUpRight, FiX, FiMail } from 'react-icons/fi'
-import { FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa'
+import { FaLinkedinIn } from 'react-icons/fa'
 
 export default function TeamGridClient({ initialMembers }) {
   const [selectedMember, setSelectedMember] = useState(null)
@@ -52,22 +52,11 @@ export default function TeamGridClient({ initialMembers }) {
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
 
-              {/* Floating Social Icons */}
+              {/* LinkedIn button — top-left corner */}
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="absolute left-5 top-1/2 -translate-y-1/2 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-10"
+                className="absolute top-4 left-4 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-10"
               >
-                {member.socials?.facebook && member.socials.facebook !== '#' && (
-                  <a
-                    href={member.socials.facebook}
-                    aria-label="Facebook"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 border border-black rounded-full flex items-center justify-center text-black bg-white/20 backdrop-blur-sm hover:bg-black hover:text-white transition-all duration-300"
-                  >
-                    <FaFacebookF className="w-4 h-4" />
-                  </a>
-                )}
                 {member.socials?.linkedin && member.socials.linkedin !== '#' && (
                   <a
                     href={member.socials.linkedin}
@@ -77,17 +66,6 @@ export default function TeamGridClient({ initialMembers }) {
                     className="w-10 h-10 border border-black rounded-full flex items-center justify-center text-black bg-white/20 backdrop-blur-sm hover:bg-black hover:text-white transition-all duration-300"
                   >
                     <FaLinkedinIn className="w-4 h-4" />
-                  </a>
-                )}
-                {member.socials?.instagram && member.socials.instagram !== '#' && (
-                  <a
-                    href={member.socials.instagram}
-                    aria-label="Instagram"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 border border-black rounded-full flex items-center justify-center text-black bg-white/20 backdrop-blur-sm hover:bg-black hover:text-white transition-all duration-300"
-                  >
-                    <FaInstagram className="w-4 h-4" />
                   </a>
                 )}
               </div>
@@ -206,16 +184,6 @@ export default function TeamGridClient({ initialMembers }) {
                   )}
 
                   <div className="flex items-center gap-3">
-                    {selectedMember.socials?.facebook && selectedMember.socials.facebook !== '#' && (
-                      <a
-                        href={selectedMember.socials.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
-                      >
-                        <FaFacebookF className="w-3.5 h-3.5" />
-                      </a>
-                    )}
                     {selectedMember.socials?.linkedin && selectedMember.socials.linkedin !== '#' && (
                       <a
                         href={selectedMember.socials.linkedin}
@@ -224,16 +192,6 @@ export default function TeamGridClient({ initialMembers }) {
                         className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
                       >
                         <FaLinkedinIn className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    {selectedMember.socials?.instagram && selectedMember.socials.instagram !== '#' && (
-                      <a
-                        href={selectedMember.socials.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-9 h-9 border border-gray-300 rounded-full flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition-all"
-                      >
-                        <FaInstagram className="w-3.5 h-3.5" />
                       </a>
                     )}
                   </div>
