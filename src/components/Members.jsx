@@ -7,50 +7,8 @@ import { ArrowUpRight } from 'lucide-react';
 
 const MotionLink = motion.create(Link);
 
-const TEAM = [
-    {
-        id: 1,
-        name: 'Mh Ador',
-        role: 'Operation Lead',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788057674/team_members/jrxoy5rm3h4vusr8ciqp.png',
-        socials: { linkedin: '#' },
-    },
-    {
-        id: 2,
-        name: 'Said Sajal',
-        role: 'Business Developer',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235837/sajal-bg.png',
-        socials: { linkedin: '#' },
-    },
-    {
-        id: 3,
-        name: 'Muntasir Islam',
-        role: 'Accounts & Quickbook Manager',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/muntasir-bg.png',
-        socials: { linkedin: '#' },
-    },
-    {
-        id: 4,
-        name: 'Apon Yeager',
-        role: 'Motion Designer',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235837/Untitled-design-1.png',
-        socials: { linkedin: '#' },
-    },
-    {
-        id: 5,
-        name: 'Mansura Mim',
-        role: 'Graphic Designer',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/mim-bg.png',
-        socials: { linkedin: '#' },
-    },
-    {
-        id: 6,
-        name: 'Palash Bhuiyan',
-        role: 'SEO Wizard',
-        image: 'https://res.cloudinary.com/gd78bssj/image/upload/v1788235838/polash-bg.png',
-        socials: { linkedin: '#' },
-    },
-];
+// Show up to 6 members on the homepage; the rest are on /team
+const HOME_LIMIT = 6;
 
 const headerVariants = {
     hidden: { opacity: 0, x: 100 },
@@ -74,7 +32,9 @@ const cardVariants = {
     }),
 };
 
-export default function TeamSection() {
+export default function TeamSection({ members = [] }) {
+    const team = members.slice(0, HOME_LIMIT);
+
     return (
         <section
             id="team"
@@ -149,8 +109,8 @@ export default function TeamSection() {
 
                 {/* TEAM GRID */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                    {TEAM.map((member, index) => (
-                        <MemberCard key={member.id} member={member} index={index} />
+                    {team.map((member, index) => (
+                        <MemberCard key={member._id} member={member} index={index} />
                     ))}
                 </div>
             </div>
@@ -159,6 +119,9 @@ export default function TeamSection() {
 }
 
 function MemberCard({ member, index }) {
+    const linkedin = member.socials?.linkedin;
+    const hasLinkedin = linkedin && linkedin !== '#';
+
     return (
         <motion.article
             custom={index}
@@ -179,9 +142,11 @@ function MemberCard({ member, index }) {
                 />
 
                 {/* SOCIAL FLOATING BADGES */}
-                <div className="absolute right-3 top-3 z-10 flex flex-col gap-2 transition-all duration-300 group-hover:translate-x-0 sm:right-3.5 sm:top-3.5">
+                <div className="absolute left-3 top-3 z-10 flex flex-col gap-2 transition-all duration-300 group-hover:translate-x-0 sm:left-3.5 sm:top-3.5">
                     <motion.a
-                        href={member.socials.linkedin}
+                        href={hasLinkedin ? linkedin : '#'}
+                        target={hasLinkedin ? '_blank' : undefined}
+                        rel={hasLinkedin ? 'noopener noreferrer' : undefined}
                         aria-label={`${member.name} LinkedIn`}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}

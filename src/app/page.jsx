@@ -1,6 +1,5 @@
-'use client';
-
 import React from 'react';
+import { getTeamMembers } from '@/app/actions/team';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import TickerSlider from '@/components/Slider';
@@ -14,7 +13,9 @@ import BlogSection from '@/components/Blog';
 const BACKGROUND_VIDEO_URL =
     "https://res.cloudinary.com/gd78bssj/video/upload/v1788228588/0_Fun_Geometry_3840x2160.mp4";
 
-export default function HomePage() {
+export default async function HomePage() {
+    const teamMembers = await getTeamMembers();
+
     return (
         <>
             <div className="relative min-h-fit lg:min-h-screen bg-[#a0b8c8] overflow-hidden">
@@ -55,7 +56,7 @@ export default function HomePage() {
             <ExploreSection />
             <ServicesSection />
             <ShowcaseSection />
-            <TeamSection />
+            <TeamSection members={teamMembers} />
             <ReviewSection />
             <BlogSection />
         </>

@@ -68,6 +68,7 @@ export async function saveTeamMember(formData) {
       await TeamMember.create(memberData)
     }
 
+    revalidatePath('/')
     revalidatePath('/team')
     revalidatePath('/admin/team')
 
@@ -86,6 +87,7 @@ export async function deleteTeamMember(id) {
     await connectToDatabase()
     await TeamMember.findByIdAndDelete(id)
 
+    revalidatePath('/')
     revalidatePath('/team')
     revalidatePath('/admin/team')
 
